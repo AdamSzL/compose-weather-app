@@ -89,11 +89,6 @@ fun WeatherAppNavigation(
     ) {
         AnimatedContent(
             targetState = currentScreen,
-            transitionSpec = {
-                (slideInHorizontally(initialOffsetX = { it }) + fadeIn()).togetherWith(
-                    slideOutHorizontally(targetOffsetX = { -it }) + fadeOut()
-                )
-            }, label = "",
         ) { screen ->
             when (screen) {
                 WeatherAppScreen.WeatherScreen -> {

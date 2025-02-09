@@ -3,4 +3,17 @@
     <string name="weather">Weather</string>
     <string name="locations">Locations</string>
     <string name="forecast">Forecast</string>
+    <string name="temperature">%.2f°C</string>
+    <string name="feels_like">Feels like %.2f°C</string>
+    <string name="max_temperature">Max Temperature</string>
+    <string name="min_temperature">Min Temperature</string>
+    <string name="sunrise_sunset"><![CDATA[Sunrise & Sunset]]></string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+    <string name="wind">Wind</string>
+    <string name="pressure">Pressure</string>
+    <string name="humidity">Humidity</string>
+    <string name="visibility">Visibility</string>
+    <string name="cloudiness">Cloudiness</string>
+    <string name="precipitation">Precipitation</string>
 </resources>
