@@ -12,7 +12,8 @@ data class WeatherInfo(
     val windSpeed: Double,
     val windDirection: Int,
     val visibility: Int,
-    val precipitation: Double,
+    val rain: Double,
+    val snow: Double,
     val cloudiness: Int,
     val weatherCondition: String,
     val weatherDescription: String,
@@ -20,25 +21,6 @@ data class WeatherInfo(
     val sunrise: Long,
     val sunset: Long
 )
-
-fun WeatherInfo.toWeatherDetails(): WeatherDetailsInfo {
-    return WeatherDetailsInfo(
-        windSpeed = windSpeed,
-        windDirection = windDirection,
-        humidity = humidity,
-        pressure = pressure,
-        precipitation = precipitation,
-        visibility = visibility,
-        cloudiness = cloudiness,
-    )
-}
-
-fun WeatherInfo.toSunriseSunsetDetails(): SunriseSunsetDetails {
-    return SunriseSunsetDetails(
-        sunrise = sunrise,
-        sunset = sunset
-    )
-}
 
 fun WeatherInfo.toWeatherHeaderInfo(): WeatherHeaderInfo {
     return WeatherHeaderInfo(

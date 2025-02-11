@@ -7,27 +7,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
-import com.example.weatherapp.core.presentation.components.WeatherCard
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.example.weatherapp.weather.domain.WeatherDetailsInfo
-import com.example.weatherapp.weather.domain.toWeatherDetails
+import com.example.weatherapp.weather.domain.WeatherInfo
 import com.example.weatherapp.weather.presentation.weather.mock.mockWeatherInfo
 
 @Composable
-fun WeatherDetails(
-    weatherDetails: WeatherDetailsInfo,
+fun WeatherTiles(
+    weatherInfo: WeatherInfo,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -35,66 +26,57 @@ fun WeatherDetails(
         modifier = modifier
             .fillMaxWidth()
     ) {
+        WindTile(
+            windSpeed = weatherInfo.windSpeed,
+            windDirection = weatherInfo.windDirection,
+            modifier = Modifier.fillMaxWidth()
+        )
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            WeatherCard(
-                headerIcon = R.drawable.ic_wind,
-                headerText = R.string.wind,
+            RainTile(
+                rain = weatherInfo.rain,
                 modifier = Modifier.weight(1f).aspectRatio(1f)
-            ) {
-
-            }
+            )
             Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_big)))
-            WeatherCard(
-                headerIcon = R.drawable.ic_precipitation,
-                headerText = R.string.precipitation,
+            SnowTile(
+                snow = weatherInfo.snow,
                 modifier = Modifier.weight(1f).aspectRatio(1f)
-            ) {
-
-            }
+            )
         }
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            WeatherCard(
-                headerIcon = R.drawable.ic_pressure,
-                headerText = R.string.pressure,
+            PressureTile(
+                pressure = weatherInfo.pressure,
                 modifier = Modifier.weight(1f).aspectRatio(1f)
-            ) {
-
-            }
+            )
             Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_big)))
-            WeatherCard(
-                headerIcon = R.drawable.ic_humidity,
-                headerText = R.string.humidity,
+            HumidityTile(
+                humidity = weatherInfo.humidity,
                 modifier = Modifier.weight(1f).aspectRatio(1f)
-            ) {
-
-            }
+            )
         }
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            WeatherCard(
-                headerIcon = R.drawable.ic_cloud,
-                headerText = R.string.cloudiness,
+            CloudinessTile(
+                cloudiness = weatherInfo.cloudiness,
                 modifier = Modifier.weight(1f).aspectRatio(1f)
-            ) {
-
-            }
+            )
             Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_big)))
-            WeatherCard(
-                headerIcon = R.drawable.ic_visibility,
-                headerText = R.string.visibility,
+            VisibilityTile(
+                visibility = 10,
                 modifier = Modifier.weight(1f).aspectRatio(1f)
-            ) {
-
-            }
+            )
         }
+        SunriseSunsetTile(
+            sunrise = weatherInfo.sunrise,
+            sunset = weatherInfo.sunset,
+        )
     }
 }
 
@@ -102,8 +84,8 @@ fun WeatherDetails(
 @Composable
 private fun WeatherDetailsPreview() {
     WeatherAppTheme {
-        WeatherDetails(
-            weatherDetails = mockWeatherInfo.toWeatherDetails()
+        WeatherTiles(
+            weatherInfo = mockWeatherInfo
         )
     }
 }

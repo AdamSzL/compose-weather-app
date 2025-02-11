@@ -36,12 +36,10 @@ import androidx.compose.ui.unit.max
 import coil3.compose.rememberAsyncImagePainter
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.example.weatherapp.weather.domain.toSunriseSunsetDetails
-import com.example.weatherapp.weather.domain.toWeatherDetails
 import com.example.weatherapp.weather.domain.toWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.components.WeatherHeader
-import com.example.weatherapp.weather.presentation.weather.components.SunriseSunsetRow
-import com.example.weatherapp.weather.presentation.weather.components.WeatherDetails
+import com.example.weatherapp.weather.presentation.weather.components.SunriseSunsetTile
+import com.example.weatherapp.weather.presentation.weather.components.WeatherTiles
 import com.example.weatherapp.weather.presentation.weather.mock.mockWeatherInfo
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,11 +77,8 @@ fun WeatherScreen(
                     WeatherHeader(
                         weatherInfo = this@with.toWeatherHeaderInfo(),
                     )
-                    WeatherDetails(
-                        weatherDetails = this@with.toWeatherDetails(),
-                    )
-                    SunriseSunsetRow(
-                        sunriseSunsetDetails = this@with.toSunriseSunsetDetails(),
+                    WeatherTiles(
+                        weatherInfo = this@with
                     )
                 }
             }

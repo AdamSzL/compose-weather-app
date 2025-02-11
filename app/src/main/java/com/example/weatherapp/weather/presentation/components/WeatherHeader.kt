@@ -73,6 +73,7 @@ fun WeatherHeader(
                     Text(
                         text = stringResource(R.string.temperature, temperature),
                         style = MaterialTheme.typography.displayLarge,
+                        color = MaterialTheme.colorScheme.primary,
                     )
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))

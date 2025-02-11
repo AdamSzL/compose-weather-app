@@ -1,13 +1,9 @@
 package com.example.weatherapp.weather.presentation.weather.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,14 +17,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
 import com.example.weatherapp.core.presentation.components.WeatherCard
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.example.weatherapp.weather.domain.SunriseSunsetDetails
-import com.example.weatherapp.weather.domain.toSunriseSunsetDetails
 import com.example.weatherapp.weather.presentation.weather.mock.mockWeatherInfo
 import com.example.weatherapp.weather.presentation.weather.utils.convertTimestampToHourMinute
 
 @Composable
-fun SunriseSunsetRow(
-    sunriseSunsetDetails: SunriseSunsetDetails,
+fun SunriseSunsetTile(
+    sunrise: Long,
+    sunset: Long,
     modifier: Modifier = Modifier
 ) {
     WeatherCard(
@@ -50,7 +45,7 @@ fun SunriseSunsetRow(
                     modifier = Modifier.size(dimensionResource(R.dimen.size_small))
                 )
                 Text(
-                    text = convertTimestampToHourMinute(sunriseSunsetDetails.sunrise),
+                    text = convertTimestampToHourMinute(sunrise),
                     style = MaterialTheme.typography.displaySmall,
                 )
             }
@@ -64,7 +59,7 @@ fun SunriseSunsetRow(
                     modifier = Modifier.size(dimensionResource(R.dimen.size_small))
                 )
                 Text(
-                    text = convertTimestampToHourMinute(sunriseSunsetDetails.sunset),
+                    text = convertTimestampToHourMinute(sunset),
                     style = MaterialTheme.typography.displaySmall
                 )
             }
@@ -76,8 +71,9 @@ fun SunriseSunsetRow(
 @Composable
 private fun SunriseSunsetRowPreview() {
     WeatherAppTheme {
-        SunriseSunsetRow(
-            sunriseSunsetDetails = mockWeatherInfo.toSunriseSunsetDetails()
+        SunriseSunsetTile(
+            sunrise = mockWeatherInfo.sunrise,
+            sunset = mockWeatherInfo.sunset,
         )
     }
 }
