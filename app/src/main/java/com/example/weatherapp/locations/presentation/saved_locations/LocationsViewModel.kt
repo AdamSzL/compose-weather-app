@@ -1,4 +1,4 @@
-package com.example.weatherapp.locations.presentation
+package com.example.weatherapp.locations.presentation.saved_locations
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -26,4 +26,15 @@
     <string name="percent">%</string>
     <string name="km">km</string>
     <string name="ms">m/s</string>
+    <string name="saved_Locations">Saved Locations</string>
+    <string name="my_location">My Location</string>
+    <string name="pick_from_map">Pick From Map</string>
+    <string name="navigate_back">Navigate Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="select">Select</string>
+    <string name="selected_location">Selected Location</string>
+    <string name="map">Map</string>
+    <string name="gps">GPS</string>
+    <string name="search_for_location">Search For Location</string>
+    <string name="new_location">New Location</string>
 </resources>

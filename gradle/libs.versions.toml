@@ -15,6 +15,7 @@ ktor = "3.0.3"
 coil = "3.1.0"
 datetime = "0.6.0"
 secretsPlugin = "2.0.1"
+mapsCompose = "4.4.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +44,9 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+maps-compose-utils = { module = "com.google.maps.android:maps-compose-utils", version.ref = "mapsCompose" }
+maps-compose-widgets = { module = "com.google.maps.android:maps-compose-widgets", version.ref = "mapsCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -58,4 +62,9 @@ ktor = [
     "ktor-client-android",
     "ktor-client-serialization",
     "ktor-client-logging",
+]
+maps-compose = [
+    "maps-compose",
+    "maps-compose-utils",
+    "maps-compose-widgets"
 ]
