@@ -21,38 +21,52 @@ import com.example.weatherapp.ui.theme.WeatherAppTheme
 @Composable
 fun SavedLocationList(
     savedLocations: List<SavedLocation>,
-    selectedLocation: SavedLocation?,
+    selectedLocationId: String?,
+    onSetLocationAsActive: (String) -> Unit,
+    onLocationDelete: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_big)),
         modifier = modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_big))
+            .padding(bottom = dimensionResource(R.dimen.padding_big))
     ) {
-        items(savedLocations) { savedLocation ->
+        items(
+            items = savedLocations,
+            key = { it.id }
+        ) {
+            savedLocation ->
             SavedLocationItem(
                 savedLocation = savedLocation,
-                isSelected = savedLocation == selectedLocation,
+                isSelected = savedLocation.id == selectedLocationId,
+                onSelect = {
+                    onSetLocationAsActive(savedLocation.id)
+                },
+                onDelete = {
+                    onLocationDelete(savedLocation.id)
+                },
                 modifier = Modifier.fillMaxWidth()
             )
         }
     }
 }
 
-class SelectedLocationParameterProvider: PreviewParameterProvider<SavedLocation?> {
-    override val values: Sequence<SavedLocation?>
-        get() = sequenceOf(mockSavedLocations.first(), null)
+class SelectedLocationIdParameterProvider: PreviewParameterProvider<String?> {
+    override val values: Sequence<String?>
+        get() = sequenceOf(mockSavedLocations.first().id, null)
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun SavedLocationListPreview(
-    @PreviewParameter(SelectedLocationParameterProvider::class) selectedLocation: SavedLocation
+    @PreviewParameter(SelectedLocationIdParameterProvider::class) selectedLocationId: String?
 ) {
     WeatherAppTheme {
         SavedLocationList(
             savedLocations = mockSavedLocations,
-            selectedLocation = selectedLocation
+            selectedLocationId = selectedLocationId,
+            onSetLocationAsActive = {},
+            onLocationDelete = {}
         )
     }
 }

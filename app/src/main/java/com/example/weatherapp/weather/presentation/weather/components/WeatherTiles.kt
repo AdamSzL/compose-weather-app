@@ -26,6 +26,7 @@ fun WeatherTiles(
         modifier = modifier
             .fillMaxWidth()
     ) {
+        val squareTileModifier = Modifier.weight(1f).aspectRatio(1f)
         WindTile(
             windSpeed = weatherInfo.windSpeed,
             windDirection = weatherInfo.windDirection,
@@ -37,12 +38,12 @@ fun WeatherTiles(
         ) {
             RainTile(
                 rain = weatherInfo.rain,
-                modifier = Modifier.weight(1f).aspectRatio(1f)
+                modifier = squareTileModifier,
             )
             Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_big)))
             SnowTile(
                 snow = weatherInfo.snow,
-                modifier = Modifier.weight(1f).aspectRatio(1f)
+                modifier = squareTileModifier,
             )
         }
         Row(
@@ -51,12 +52,12 @@ fun WeatherTiles(
         ) {
             PressureTile(
                 pressure = weatherInfo.pressure,
-                modifier = Modifier.weight(1f).aspectRatio(1f)
+                modifier = squareTileModifier,
             )
             Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_big)))
             HumidityTile(
                 humidity = weatherInfo.humidity,
-                modifier = Modifier.weight(1f).aspectRatio(1f)
+                modifier = squareTileModifier,
             )
         }
         Row(
@@ -65,12 +66,12 @@ fun WeatherTiles(
         ) {
             CloudinessTile(
                 cloudiness = weatherInfo.cloudiness,
-                modifier = Modifier.weight(1f).aspectRatio(1f)
+                modifier = squareTileModifier,
             )
             Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_big)))
             VisibilityTile(
                 visibility = 10,
-                modifier = Modifier.weight(1f).aspectRatio(1f)
+                modifier = squareTileModifier,
             )
         }
         SunriseSunsetTile(

@@ -36,6 +36,7 @@ import com.example.weatherapp.ui.theme.WeatherAppTheme
 fun AddLocationFloatingActionButton(
     isFabExpanded: Boolean,
     onExpandedToggle: () -> Unit,
+    onFetchUserLocation: () -> Unit,
     onNavigateToLocationMap: () -> Unit,
     onNavigateToLocationSearch: () -> Unit,
     modifier: Modifier = Modifier
@@ -53,9 +54,7 @@ fun AddLocationFloatingActionButton(
             visible = isFabExpanded,
             icon = R.drawable.ic_my_location,
             text = R.string.my_location,
-            onClick = {
-
-            }
+            onClick = onFetchUserLocation
         )
         LocationTypeBlock(
             visible = isFabExpanded,
@@ -67,7 +66,7 @@ fun AddLocationFloatingActionButton(
             visible = isFabExpanded,
             icon = R.drawable.ic_search,
             text = R.string.search_for_location,
-            onClick = onNavigateToLocationSearch,
+            onClick = onNavigateToLocationSearch
         )
         ExtendedFloatingActionButton(
             onClick = onExpandedToggle,
@@ -101,6 +100,7 @@ private fun AddLocationFloatingActionButtonPreview(
         AddLocationFloatingActionButton(
             isFabExpanded = isFabExpanded,
             onExpandedToggle = {},
+            onFetchUserLocation = {},
             onNavigateToLocationMap = {},
             onNavigateToLocationSearch = {}
         )

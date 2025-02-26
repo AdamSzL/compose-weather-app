@@ -1,5 +1,6 @@
 package com.example.weatherapp.locations.presentation.map
 
+import android.location.Location
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -51,7 +52,8 @@ import com.google.maps.android.compose.rememberMarkerState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationMapScreen(
-    onNavigateBack: () -> Unit,
+    onCancelLocationSelection: () -> Unit,
+    onLocationSelected: (LatLng) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedLocation by remember { mutableStateOf< LatLng?>(null) }
@@ -66,7 +68,7 @@ fun LocationMapScreen(
             TopAppBar(
                 navigationIcon = {
                     IconButton(
-                        onClick = onNavigateBack
+                        onClick = onCancelLocationSelection
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -92,7 +94,6 @@ fun LocationMapScreen(
             modifier = Modifier
                 .consumeWindowInsets(innerPadding)
                 .fillMaxSize()
-                .background(Color.Red)
         ) {
             GoogleMap(
                 modifier = Modifier
@@ -119,14 +120,16 @@ fun LocationMapScreen(
                         vertical = dimensionResource(R.dimen.padding_small))
             ) {
                 OutlinedButton(
-                    onClick = onNavigateBack,
+                    onClick = onCancelLocationSelection,
                 ) {
                     Text(
                         text = stringResource(R.string.cancel)
                     )
                 }
                 Button(
-                    onClick = {},
+                    onClick = {
+                        onLocationSelected(markerState.value.position)
+                    },
                     enabled = selectedLocation != null,
                 ) {
                     Text(
@@ -144,7 +147,8 @@ fun LocationMapScreen(
 private fun MapScreenPreview() {
     WeatherAppTheme {
         LocationMapScreen(
-            onNavigateBack = {}
+            onCancelLocationSelection = {},
+            onLocationSelected = {}
         )
     }
 }

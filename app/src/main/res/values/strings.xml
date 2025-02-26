@@ -37,4 +37,14 @@
     <string name="gps">GPS</string>
     <string name="search_for_location">Search For Location</string>
     <string name="new_location">New Location</string>
+    <string name="delete_location">Delete Location</string>
+    <string name="set_as_active">Set as Active</string>
+    <string name="confirm">Confirm</string>
+    <string name="delete_location_confirmation">Are you sure that you want to permanently delete the location: %s?</string>
+    <string name="location_permission_required">Location Permission Required</string>
+    <string name="location_access_required_feature">This feature requires location access. Please enable it in the app settings.</string>
+    <string name="location_permission_rationale_text">This feature requires location access to provide accurate weather data. Please allow location access.</string>
+    <string name="location_access_disabled_enable_in_settings">Location access is disabled. Enable it in settings to use this feature.</string>
+    <string name="location_permission_required_for_this_feature">Location permission is required to use this feature.</string>
+    <string name="location_successfully_added">Location was successfully added to the list.</string>
 </resources>

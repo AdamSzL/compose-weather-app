@@ -28,15 +28,18 @@ import com.example.weatherapp.WeatherApp
 import com.example.weatherapp.locations.presentation.location_search.LocationSearchScreen
 import com.example.weatherapp.locations.presentation.map.LocationMapScreen
 import com.example.weatherapp.locations.presentation.saved_locations.LocationsScreen
+import com.example.weatherapp.locations.presentation.saved_locations.LocationsScreenEvent
 import com.example.weatherapp.locations.presentation.saved_locations.LocationsViewModel
 import com.example.weatherapp.weather.presentation.forecast.ForecastScreen
 import com.example.weatherapp.weather.presentation.forecast.ForecastViewModel
 import com.example.weatherapp.weather.presentation.weather.WeatherScreen
 import com.example.weatherapp.weather.presentation.weather.WeatherViewModel
+import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun WeatherAppNavigation(
+    onGoToAppSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
@@ -104,22 +107,33 @@ fun WeatherAppNavigation(
                     forecastState = forecastState
                 )
             }
-            composable<WeatherAppScreen.LocationsScreen> {
+            composable<WeatherAppScreen.LocationsScreen> { backStackEntry ->
                 val locationsViewModel = koinViewModel<LocationsViewModel>()
                 val locationsState by locationsViewModel.locationsState.collectAsStateWithLifecycle()
+                val selectedMapLocationLatLng = backStackEntry.savedStateHandle.get<Pair<Double, Double>>("selected_location")
                 LocationsScreen(
                     locationsState = locationsState,
-                    onNavigateToLocationMap = {
-                        navController.navigate(WeatherAppScreen.LocationMapScreen)
-                    },
-                    onNavigateToLocationSearch = {
-                        navController.navigate(WeatherAppScreen.LocationSearchScreen)
+                    selectedMapLocationLatLng = selectedMapLocationLatLng,
+                    onLocationScreenEvent = {
+                        when (it) {
+                            LocationsScreenEvent.NavigateToLocationMap -> navController.navigate(WeatherAppScreen.LocationMapScreen)
+                            LocationsScreenEvent.NavigateToLocationSearch -> navController.navigate(WeatherAppScreen.LocationSearchScreen)
+                            LocationsScreenEvent.GoToAppSettings -> onGoToAppSettings()
+                            LocationsScreenEvent.ResetSavedMapLocation -> backStackEntry.savedStateHandle.remove<Pair<Double, Double>>("selected_location")
+                            else -> Unit
+                        }
+                        locationsViewModel.onLocationsScreenEvent(it)
                     }
                 )
             }
             composable<WeatherAppScreen.LocationMapScreen> {
                 LocationMapScreen(
-                    onNavigateBack = {
+                    onLocationSelected = { latLng ->
+                        val latitudeLongitude = Pair(latLng.latitude, latLng.longitude)
+                        navController.previousBackStackEntry?.savedStateHandle?.set("selected_location", latitudeLongitude)
+                        navController.popBackStack()
+                    },
+                    onCancelLocationSelection = {
                         navController.popBackStack()
                     },
                 )

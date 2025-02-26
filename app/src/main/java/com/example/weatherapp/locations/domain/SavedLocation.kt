@@ -8,5 +8,4 @@ data class SavedLocation(
     val latitude: Double,
     val longitude: Double,
     val country: String?,
-    val source: LocationSource,
 )
