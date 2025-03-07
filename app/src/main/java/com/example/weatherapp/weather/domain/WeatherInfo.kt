@@ -24,6 +24,8 @@ data class WeatherInfo(
 
 fun WeatherInfo.toWeatherHeaderInfo(): WeatherHeaderInfo {
     return WeatherHeaderInfo(
+        cityName = cityName,
+        country = country,
         temperature = temperature,
         feelsLike = feelsLike,
         minTemperature = minTemperature,
@@ -31,5 +33,20 @@ fun WeatherInfo.toWeatherHeaderInfo(): WeatherHeaderInfo {
         weatherCondition = weatherCondition,
         weatherDescription = weatherDescription,
         weatherIcon = weatherIcon
+    )
+}
+
+fun WeatherInfo.toWeatherTileDataList(): List<WeatherTileData> {
+    return listOf(
+        WeatherTileData.WindSpeed(windSpeed = windSpeed),
+        WeatherTileData.WindDirection(windDirection = windDirection),
+        WeatherTileData.Rain(rain = rain),
+        WeatherTileData.Snow(snow = snow),
+        WeatherTileData.Pressure(pressure = pressure),
+        WeatherTileData.Humidity(humidity = humidity),
+        WeatherTileData.Cloudiness(cloudiness = cloudiness),
+        WeatherTileData.Visibility(visibility = visibility),
+        WeatherTileData.Sunrise(sunrise = sunrise),
+        WeatherTileData.Sunset(sunset = sunset)
     )
 }

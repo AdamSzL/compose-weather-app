@@ -16,6 +16,8 @@ coil = "3.1.0"
 datetime = "0.6.0"
 secretsPlugin = "2.0.1"
 mapsCompose = "4.4.1"
+reorderable = "2.4.3"
+kotlinxCoroutinesTest = "1.10.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,7 +51,10 @@ maps-compose-utils = { module = "com.google.maps.android:maps-compose-utils", ve
 maps-compose-widgets = { module = "com.google.maps.android:maps-compose-widgets", version.ref = "mapsCompose" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version = "0.37.2" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version = "21.3.0" }
-kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version = "1.7.3" }
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version = "1.10.1" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.1.1" }
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -57,6 +62,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsPlugin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 
 [bundles]
 ktor = [

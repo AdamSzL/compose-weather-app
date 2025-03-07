@@ -1,20 +1,21 @@
-package com.example.weatherapp.weather.presentation.weather.components
+package com.example.weatherapp.weather.presentation.weather.components.tiles
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.theme.WeatherAppTheme
+import com.example.weatherapp.weather.presentation.weather.components.WeatherValueUnitTile
 
 @Composable
-fun RainTile(
-    rain: Double,
+fun SnowTile(
+    snow: Double,
     modifier: Modifier = Modifier
 ) {
     WeatherValueUnitTile(
-        tileHeaderIcon = R.drawable.ic_rain,
-        tileHeaderText = R.string.rain,
-        value = "%.2f".format(rain),
+        tileHeaderIcon = R.drawable.ic_snow,
+        tileHeaderText = R.string.snow,
+        value = "%.2f".format(snow),
         unit = R.string.mmh,
         modifier = modifier
     )
@@ -22,10 +23,10 @@ fun RainTile(
 
 @Preview(showBackground = true)
 @Composable
-private fun PrecipitationTilePreview() {
+private fun SnowTilePreview() {
     WeatherAppTheme {
-        RainTile(
-            rain = 2.73,
+        SnowTile(
+            snow = 2.67,
         )
     }
 }

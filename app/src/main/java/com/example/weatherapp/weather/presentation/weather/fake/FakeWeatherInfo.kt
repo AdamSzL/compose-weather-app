@@ -1,8 +1,10 @@
-package com.example.weatherapp.weather.presentation.weather.mock
+package com.example.weatherapp.weather.presentation.weather.fake
 
 import com.example.weatherapp.weather.domain.WeatherInfo
+import com.example.weatherapp.weather.domain.toWeatherHeaderInfo
+import com.example.weatherapp.weather.domain.toWeatherTileDataList
 
-val mockWeatherInfo = WeatherInfo(
+val fakeWeatherInfo = WeatherInfo(
     cityName = "Province of Turin",
     country = "IT",
     temperature = 11.05,
@@ -23,3 +25,7 @@ val mockWeatherInfo = WeatherInfo(
     sunrise = 1726636384,
     sunset = 1726680975
 )
+
+val fakeWeatherHeaderInfo = fakeWeatherInfo.toWeatherHeaderInfo()
+
+val fakeWeatherTileData = fakeWeatherInfo.toWeatherTileDataList()

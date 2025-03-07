@@ -1,6 +1,5 @@
 package com.example.weatherapp.locations.presentation.saved_locations.mock
 
-import com.example.weatherapp.locations.domain.LocationSource
 import com.example.weatherapp.locations.domain.SavedLocation
 import java.util.UUID
 

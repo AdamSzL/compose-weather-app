@@ -8,7 +8,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
-import org.koin.core.scope.get
 import org.koin.dsl.module
 
 val locationsModule = module {

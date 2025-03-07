@@ -1,7 +1,6 @@
 package com.example.weatherapp.locations.presentation.saved_locations
 
 import android.location.Location
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.R
@@ -10,7 +9,6 @@ import com.example.weatherapp.core.presentation.UiText
 import com.example.weatherapp.locations.data.repository.LocationRepository
 import com.example.weatherapp.locations.domain.SavedLocation
 import com.example.weatherapp.locations.domain.asUiText
-import com.google.android.gms.location.FusedLocationProviderClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

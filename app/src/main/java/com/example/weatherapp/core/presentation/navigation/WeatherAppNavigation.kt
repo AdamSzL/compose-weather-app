@@ -1,10 +1,7 @@
 package com.example.weatherapp.core.presentation.navigation
 
-import android.util.Log
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.scaleOut
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -14,17 +11,16 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
-import com.example.weatherapp.WeatherApp
 import com.example.weatherapp.locations.presentation.location_search.LocationSearchScreen
 import com.example.weatherapp.locations.presentation.map.LocationMapScreen
 import com.example.weatherapp.locations.presentation.saved_locations.LocationsScreen
@@ -34,7 +30,6 @@ import com.example.weatherapp.weather.presentation.forecast.ForecastScreen
 import com.example.weatherapp.weather.presentation.forecast.ForecastViewModel
 import com.example.weatherapp.weather.presentation.weather.WeatherScreen
 import com.example.weatherapp.weather.presentation.weather.WeatherViewModel
-import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -91,13 +86,28 @@ fun WeatherAppNavigation(
         NavHost(
             navController = navController,
             startDestination = WeatherAppScreen.WeatherScreen,
+            popExitTransition = {
+                scaleOut(
+                    targetScale = 0.9f,
+                    transformOrigin = TransformOrigin(pivotFractionX = 0.5f, pivotFractionY = 0.5f)
+                )
+            },
+            popEnterTransition = {
+                EnterTransition.None
+            },
             modifier = Modifier
         ) {
             composable<WeatherAppScreen.WeatherScreen> {
                 val weatherViewModel = koinViewModel<WeatherViewModel>()
                 val weatherState by weatherViewModel.weatherState.collectAsStateWithLifecycle()
                 WeatherScreen(
-                    weatherState = weatherState
+                    weatherState = weatherState,
+                    onWeatherScreenEvent = {
+                        when (it) {
+                            else -> Unit
+                        }
+                        weatherViewModel.onWeatherScreenEvent(it)
+                    }
                 )
             }
             composable<WeatherAppScreen.ForecastScreen> {

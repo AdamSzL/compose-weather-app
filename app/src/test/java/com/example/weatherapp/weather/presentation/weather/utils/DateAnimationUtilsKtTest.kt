@@ -5,7 +5,7 @@ import org.junit.Assert.*
 
 import org.junit.Test
 
-class DateUtilsKtTest {
+class DateAnimationUtilsKtTest {
 
     @Test
     fun convertTimestampToHourMinute_timestamp_returnsHourMinuteString() {

@@ -1,7 +1,5 @@
 package com.example.weatherapp.core.presentation.components
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
@@ -32,7 +30,7 @@ fun ConfirmAlertDialog(
         icon = {
             Icon(
                 imageVector = icon,
-                contentDescription = title,
+                contentDescription = null,
             )
         },
         title = {

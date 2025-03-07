@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ElevatedCard
@@ -24,7 +25,7 @@ fun WeatherCard(
     @DrawableRes headerIcon: Int,
     @StringRes headerText: Int,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     ElevatedCard(modifier = modifier) {
         Column(
@@ -37,7 +38,7 @@ fun WeatherCard(
             ) {
                 Icon(
                     painter = painterResource(headerIcon),
-                    contentDescription = stringResource(headerText),
+                    contentDescription = null
                 )
                 Text(
                     text = stringResource(headerText)

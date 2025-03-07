@@ -5,7 +5,6 @@ import com.example.weatherapp.core.domain.Result
 import com.example.weatherapp.locations.domain.FetchUserLocationError
 import com.example.weatherapp.locations.domain.GetAddressFromLocationError
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.delay
 
 class FakeLocationRepository(
 

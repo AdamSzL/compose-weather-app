@@ -1,10 +1,5 @@
 package com.example.weatherapp.locations.presentation.saved_locations
 
-import android.content.Intent
-import android.location.Location
-import android.net.Uri
-import android.provider.Settings
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -29,14 +24,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat.startActivity
 import com.example.weatherapp.R
 import com.example.weatherapp.core.presentation.UiText
 import com.example.weatherapp.locations.presentation.components.AddLocationFloatingActionButton
 import com.example.weatherapp.locations.presentation.saved_locations.components.SavedLocationList
 import com.example.weatherapp.locations.presentation.saved_locations.mock.mockSavedLocations
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.google.maps.android.compose.GoogleMap
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

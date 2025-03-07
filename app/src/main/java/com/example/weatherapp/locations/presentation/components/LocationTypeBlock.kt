@@ -23,7 +23,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import coil3.compose.AsyncImagePainter.State.Empty.painter
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
@@ -62,7 +61,7 @@ fun LocationTypeBlock(
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_small)))
                 Icon(
                     painter = painterResource(icon),
-                    contentDescription = stringResource(text),
+                    contentDescription = null
                 )
             }
         }

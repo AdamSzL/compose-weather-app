@@ -1,104 +1,135 @@
 package com.example.weatherapp.weather.presentation.weather
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsTopHeight
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
-import coil3.compose.rememberAsyncImagePainter
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.example.weatherapp.weather.domain.toWeatherHeaderInfo
-import com.example.weatherapp.weather.presentation.components.WeatherHeader
-import com.example.weatherapp.weather.presentation.weather.components.SunriseSunsetTile
-import com.example.weatherapp.weather.presentation.weather.components.WeatherTiles
-import com.example.weatherapp.weather.presentation.weather.mock.mockWeatherInfo
+import com.example.weatherapp.weather.presentation.weather.components.EditModeFloatingActionButton
+import com.example.weatherapp.weather.presentation.weather.components.EditModeTopAppBar
+import com.example.weatherapp.weather.presentation.weather.components.WeatherOverview
+import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherHeaderInfo
+import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherTileData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherScreen(
     weatherState: WeatherState,
+    onWeatherScreenEvent: (WeatherScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val scrollState = rememberScrollState()
     Scaffold(
         topBar = {
-            if (weatherState.weatherInfo != null) {
+            if (weatherState.weatherHeaderInfo != null && !weatherState.isEditModeEnabled) {
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
-                            text = "${weatherState.weatherInfo.cityName}, ${weatherState.weatherInfo.country}",
+                            text = "${weatherState.weatherHeaderInfo.cityName}, ${weatherState.weatherHeaderInfo.country}",
                             style = MaterialTheme.typography.headlineMedium,
                         )
                     },
                 )
+            } else if (weatherState.isEditModeEnabled) {
+                EditModeTopAppBar(
+                    weatherState = weatherState,
+                    onWeatherScreenEvent = onWeatherScreenEvent
+                )
+            }
+        },
+        floatingActionButton = {
+            AnimatedContent(
+                targetState = weatherState.isEditModeEnabled,
+            ) { isEditModeEnabled ->
+                if (isEditModeEnabled) {
+                    EditModeFloatingActionButton(
+                        isDeleting = weatherState.isDeleteModeEnabled,
+                        onToggleDeleteMode = {
+                            onWeatherScreenEvent(WeatherScreenEvent.ToggleDeleteMode(it))
+                        },
+                        onSaveLayoutAndExitEditingMode = {
+                            onWeatherScreenEvent(WeatherScreenEvent.SaveLayoutAndExitEditMode)
+                        }
+                    )
+                } else {
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            onWeatherScreenEvent(WeatherScreenEvent.ToggleEditMode(true))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = null
+                            )
+                        },
+                        text = {
+                            Text(
+                                text = stringResource(R.string.edit)
+                            )
+                        }
+                    )
+                }
             }
         },
         modifier = modifier
     ) { innerPadding ->
-        if (weatherState.weatherInfo != null) {
-            with (weatherState.weatherInfo) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_big)),
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .padding(horizontal = dimensionResource(R.dimen.padding_big))
-                        .padding(bottom = dimensionResource(R.dimen.padding_big))
-                        .verticalScroll(scrollState)
-                ) {
-                    WeatherHeader(
-                        weatherInfo = this@with.toWeatherHeaderInfo(),
-                    )
-                    WeatherTiles(
-                        weatherInfo = this@with
-                    )
-                }
-            }
-        } else {
-            Text(
-                text = "loading data..."
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+            WeatherOverview(
+                weatherHeaderInfo = weatherState.weatherHeaderInfo!!,
+                weatherTileData = weatherState.weatherTileData,
+                areTilesReorderable = weatherState.isEditModeEnabled && !weatherState.isDeleteModeEnabled && !weatherState.isSavingLayout && !weatherState.areTilesLocked,
+                areTilesRemovable = weatherState.isDeleteModeEnabled,
+                onDeleteTile = {
+                    onWeatherScreenEvent(WeatherScreenEvent.DeleteTile(it))
+                },
+                onMoveTile = { from, to ->
+                    onWeatherScreenEvent(WeatherScreenEvent.MoveTile(from, to))
+                },
+                modifier = Modifier
+                    .padding(horizontal = dimensionResource(R.dimen.padding_big))
             )
         }
     }
 }
 
+class IsEditModeEnabledParameterProvider: PreviewParameterProvider<Boolean> {
+    override val values: Sequence<Boolean>
+        get() = sequenceOf(true, false)
+}
+
 @Preview(showBackground = true)
 @Composable
-private fun WeatherScreenPreview() {
+private fun WeatherScreenPreview(
+    @PreviewParameter(IsEditModeEnabledParameterProvider::class) isEditModeEnabled: Boolean
+) {
     WeatherAppTheme {
         WeatherScreen(
             weatherState = WeatherState(
-                weatherInfo = mockWeatherInfo
-            )
+                weatherHeaderInfo = fakeWeatherHeaderInfo,
+                weatherTileData = fakeWeatherTileData,
+                isEditModeEnabled = isEditModeEnabled
+            ),
+            onWeatherScreenEvent = {}
         )
     }
 }
-

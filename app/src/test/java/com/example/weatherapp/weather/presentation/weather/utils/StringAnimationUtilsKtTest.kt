@@ -4,7 +4,7 @@ import org.junit.Assert.*
 
 import org.junit.Test
 
-class StringUtilsKtTest {
+class StringAnimationUtilsKtTest {
 
     @Test
     fun capitalizeWords_twoWordsString_returnsCapitalizedString() {
