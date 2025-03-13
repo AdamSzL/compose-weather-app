@@ -1,5 +1,6 @@
-package com.example.weatherapp.locations.domain
+package com.example.weatherapp.locations.domain.models
 
+import com.example.weatherapp.R
 import com.example.weatherapp.core.domain.Error
 import com.example.weatherapp.core.presentation.UiText
 
@@ -12,7 +13,7 @@ enum class FetchUserLocationError: Error {
 fun FetchUserLocationError.asUiText(): UiText {
     return when (this) {
         FetchUserLocationError.LocationFetchFailed -> UiText.DynamicString("Failed to fetch location")
-        FetchUserLocationError.LocationPermissionNotGranted -> UiText.DynamicString("Location permission not granted")
+        FetchUserLocationError.LocationPermissionNotGranted -> UiText.StringResource(R.string.location_permission_not_granted)
         FetchUserLocationError.LocationServicesDisabled -> UiText.DynamicString("Location services disabled")
     }
 }

@@ -2,13 +2,18 @@ package com.example.weatherapp.locations.data.repository
 
 import android.location.Location
 import com.example.weatherapp.core.domain.Result
-import com.example.weatherapp.locations.domain.FetchUserLocationError
-import com.example.weatherapp.locations.domain.GetAddressFromLocationError
+import com.example.weatherapp.locations.domain.models.FetchUserLocationError
+import com.example.weatherapp.locations.domain.models.GeoAddress
+import com.example.weatherapp.locations.domain.models.GeoLocation
+import com.example.weatherapp.locations.domain.models.GeoPoint
+import com.example.weatherapp.locations.domain.models.GetAddressFromLocationError
 
 interface LocationRepository {
 
-    suspend fun fetchUserLocation(): Result<Location, FetchUserLocationError>
+    suspend fun getSavedLocations(): List<GeoLocation>
 
-    suspend fun getAddressFromLocation(location: Location): Result<Pair<String, String?>, GetAddressFromLocationError>
+    suspend fun fetchUserLocation(): Result<GeoPoint, FetchUserLocationError>
+
+    suspend fun getAddressFromCoordinates(coordinates: GeoPoint): Result<GeoAddress, GetAddressFromLocationError>
 
 }

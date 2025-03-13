@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-03-04T18:35:14.158412600Z">
+        <DropdownSelection timestamp="2025-03-07T18:21:42.988020700Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\adams\.android\avd\Pixel_9_Pro_XL_API_35.avd" />
@@ -13,16 +13,19 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="weatherScreen_DeleteTileInDeleteMode_CorrectlyDeletesTile()">
+      <SelectionState runConfigName="locationsScreen_savedLocationsDisplayedCorrectly()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="WeatherDirectionTest">
+      <SelectionState runConfigName="locationsScreen_ClickLocation_MakesLocationActive()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="weatherScreen_EditMode_VerifyDropdownMenuDisplaysCorrectly()">
+      <SelectionState runConfigName="weatherScreen_ClickFloatingActionButton_ExpandsMenu()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="WeatherScreenUITest">
+      <SelectionState runConfigName="locationsScreen_SavedLocationsDisplayedCorrectly()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="weatherScreen_SwipeLocationToTheLeft_DeletesLocation()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

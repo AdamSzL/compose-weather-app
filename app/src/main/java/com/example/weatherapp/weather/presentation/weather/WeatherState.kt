@@ -1,8 +1,8 @@
 package com.example.weatherapp.weather.presentation.weather
 
 import com.example.weatherapp.core.presentation.UiText
-import com.example.weatherapp.weather.domain.WeatherHeaderInfo
-import com.example.weatherapp.weather.domain.WeatherTileData
+import com.example.weatherapp.weather.domain.models.WeatherHeaderInfo
+import com.example.weatherapp.weather.domain.models.WeatherTileData
 import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherTileData
 
@@ -17,5 +17,5 @@ data class WeatherState(
     val isAutoSaveEnabled: Boolean = true,
     val isSavingLayout: Boolean = false,
     val isLoading: Boolean = false,
-    val error: UiText? = null
+    val message: UiText? = null
 )

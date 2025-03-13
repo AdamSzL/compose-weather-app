@@ -2,11 +2,16 @@ package com.example.weatherapp.weather.presentation.weather
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherapp.weather.domain.WeatherTileData
+import com.example.weatherapp.core.domain.Result
+import com.example.weatherapp.weather.data.repository.WeatherRepository
+import com.example.weatherapp.weather.domain.models.WeatherTileData
+import com.example.weatherapp.weather.domain.models.asUiText
+import com.example.weatherapp.weather.domain.models.toWeatherTileDataList
 import com.example.weatherapp.weather.domain.use_cases.DeleteTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.MoveTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.ResetLayoutUseCase
 import com.example.weatherapp.weather.domain.use_cases.SaveLayoutInHistoryUseCase
+import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherTileData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +24,8 @@ class WeatherViewModel(
     private val moveTilesUseCase: MoveTileUseCase,
     private val deleteTileUseCase: DeleteTileUseCase,
     private val saveLayoutInHistoryUseCase: SaveLayoutInHistoryUseCase,
-    private val resetLayoutUseCase: ResetLayoutUseCase
+    private val resetLayoutUseCase: ResetLayoutUseCase,
+    private val weatherRepository: WeatherRepository,
 ): ViewModel() {
 
     private val _weatherState = MutableStateFlow(WeatherState())
@@ -29,6 +35,7 @@ class WeatherViewModel(
     private val autoSaveDelay = 2000L
 
     init {
+        fetchCurrentWeatherInfo()
         viewModelScope.launch {
             autoSaveLayoutChanges
                 .debounce(autoSaveDelay)
@@ -52,13 +59,23 @@ class WeatherViewModel(
             is WeatherScreenEvent.UndoLayoutChange -> undoLayoutChange()
             is WeatherScreenEvent.RedoLayoutChange -> redoLayoutChange()
             is WeatherScreenEvent.SaveLayoutAndExitEditMode -> saveLayoutAndExitEditMode()
-            else -> Unit
         }
     }
 
-    fun setWeatherTiles(tiles: List<WeatherTileData>) {
-        _weatherState.update {
-            it.copy(weatherTileData = tiles)
+    private fun fetchCurrentWeatherInfo() {
+        viewModelScope.launch {
+            when (val weatherInfoResult = weatherRepository.getCurrentWeather()) {
+                is Result.Success -> {
+                    _weatherState.update {
+                        it.copy(weatherTileData = weatherInfoResult.data.toWeatherTileDataList())
+                    }
+                }
+                is Result.Error -> {
+                    _weatherState.update {
+                        it.copy(message = weatherInfoResult.error.asUiText())
+                    }
+                }
+            }
         }
     }
 
@@ -159,13 +176,15 @@ class WeatherViewModel(
 
     private fun saveLayoutIfAutoSaveEnabled() {
         if (_weatherState.value.isAutoSaveEnabled) {
-            saveLayout()
+            viewModelScope.launch {
+                autoSaveLayoutChanges.emit(Unit)
+            }
         }
     }
 
     private fun saveLayout() {
         viewModelScope.launch {
-            autoSaveLayoutChanges.emit(Unit)
+            saveLayoutOnDevice()
         }
     }
 

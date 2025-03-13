@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.example.weatherapp.weather.domain.WeatherTileData
+import com.example.weatherapp.weather.domain.models.WeatherTileData
 import com.example.weatherapp.weather.presentation.weather.components.tiles.CloudinessTile
 import com.example.weatherapp.weather.presentation.weather.components.tiles.HumidityTile
 import com.example.weatherapp.weather.presentation.weather.components.tiles.PressureTile

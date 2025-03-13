@@ -1,25 +1,35 @@
 package com.example.weatherapp.weather.presentation.weather
 
-import com.example.weatherapp.weather.domain.WeatherTileData
+import com.example.weatherapp.core.presentation.UiText
+import com.example.weatherapp.core.utils.MainDispatcherRule
+import com.example.weatherapp.weather.data.repository.FakeWeatherRepository
+import com.example.weatherapp.weather.data.repository.WeatherRepository
+import com.example.weatherapp.weather.domain.models.GetCurrentWeatherError
+import com.example.weatherapp.weather.domain.models.asUiText
 import com.example.weatherapp.weather.domain.use_cases.DeleteTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.MoveTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.ResetLayoutUseCase
 import com.example.weatherapp.weather.domain.use_cases.SaveLayoutInHistoryUseCase
 import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherTileData
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class WeatherViewModelTest {
-
-//    @get:Rule
-//    val testDispatcherRule = TestCoroutineRule()
 
     private lateinit var viewModel: WeatherViewModel
     private lateinit var moveTileUseCase: MoveTileUseCase
     private lateinit var deleteTileUseCase: DeleteTileUseCase
     private lateinit var saveLayoutInHistoryUseCase: SaveLayoutInHistoryUseCase
     private lateinit var resetLayoutUseCase: ResetLayoutUseCase
+    private lateinit var weatherRepository: WeatherRepository
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     @Before
     fun setUp() {
@@ -27,13 +37,13 @@ class WeatherViewModelTest {
         deleteTileUseCase = DeleteTileUseCase()
         saveLayoutInHistoryUseCase = SaveLayoutInHistoryUseCase()
         resetLayoutUseCase = ResetLayoutUseCase()
-        viewModel = WeatherViewModel(moveTileUseCase, deleteTileUseCase, saveLayoutInHistoryUseCase, resetLayoutUseCase)
+        weatherRepository = FakeWeatherRepository()
+        viewModel = WeatherViewModel(moveTileUseCase, deleteTileUseCase, saveLayoutInHistoryUseCase, resetLayoutUseCase, weatherRepository)
         viewModel.onWeatherScreenEvent(WeatherScreenEvent.ToggleAutoSave(false))
-        viewModel.setWeatherTiles(fakeWeatherTileData)
     }
 
     @Test
-    fun weatherViewModel_SetTileData_UpdatesTileDataState() {
+    fun weatherViewModel_SetTileData_UpdatesTileDataState() = runTest {
         assertEquals(fakeWeatherTileData.size, viewModel.weatherState.value.weatherTileData.size)
         assertEquals(fakeWeatherTileData, viewModel.weatherState.value.weatherTileData)
     }
@@ -75,7 +85,7 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun weatherViewModel_DeleteTile_RemovesTileFromList() {
+    fun weatherViewModel_DeleteTile_RemovesTileFromList() = runTest {
         val tileIdsToDelete = fakeWeatherTileData.take(2).map { it.tileId }
         tileIdsToDelete.forEach { tileId ->
             viewModel.onWeatherScreenEvent(WeatherScreenEvent.DeleteTile(tileId))
@@ -85,7 +95,7 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun weatherViewModel_MoveTile_CorrectlySwapsTiles() {
+    fun weatherViewModel_MoveTile_CorrectlySwapsTiles() = runTest {
         viewModel.onWeatherScreenEvent(WeatherScreenEvent.MoveTile(from = 0, to = 1))
         assertEquals(fakeWeatherTileData[1], viewModel.weatherState.value.weatherTileData[0])
         assertEquals(fakeWeatherTileData[0], viewModel.weatherState.value.weatherTileData[1])
@@ -93,20 +103,20 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun weatherViewModel_MoveTileToTheSamePosition_DoesNothing() {
+    fun weatherViewModel_MoveTileToTheSamePosition_DoesNothing() = runTest {
         viewModel.onWeatherScreenEvent(WeatherScreenEvent.MoveTile(from = 0, to = 0))
         assertEquals(fakeWeatherTileData, viewModel.weatherState.value.weatherTileData)
     }
 
     @Test
-    fun weatherViewModel_ShuffleTiles_ShufflesTilesInTheList() {
+    fun weatherViewModel_ShuffleTiles_ShufflesTilesInTheList() = runTest {
         viewModel.onWeatherScreenEvent(WeatherScreenEvent.ShuffleTiles)
         assertEquals(fakeWeatherTileData.size, viewModel.weatherState.value.weatherTileData.size)
         assertTrue(fakeWeatherTileData.containsAll(viewModel.weatherState.value.weatherTileData) && viewModel.weatherState.value.weatherTileData.containsAll(fakeWeatherTileData))
     }
 
     @Test
-    fun weatherViewModel_SaveLayoutInHistory_LayoutIsAddedToHistory() {
+    fun weatherViewModel_SaveLayoutInHistory_LayoutIsAddedToHistory() = runTest {
         assertEquals(1, viewModel.weatherState.value.weatherTileDataHistory.size)
         viewModel.onWeatherScreenEvent(WeatherScreenEvent.ShuffleTiles)
         assertEquals(2, viewModel.weatherState.value.weatherTileDataHistory.size)
@@ -119,7 +129,7 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun weatherViewModel_SaveLayoutInHistoryWhenLayoutIsNotLatest_CorrectlyUpdatesHistory() {
+    fun weatherViewModel_SaveLayoutInHistoryWhenLayoutIsNotLatest_CorrectlyUpdatesHistory() = runTest {
         assertEquals(1, viewModel.weatherState.value.weatherTileDataHistory.size)
         repeat(5) {
             viewModel.onWeatherScreenEvent(WeatherScreenEvent.ShuffleTiles)
@@ -139,7 +149,7 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun weatherViewModel_UndoLayoutChangeWhenNotPossible_DoesNothing() {
+    fun weatherViewModel_UndoLayoutChangeWhenNotPossible_DoesNothing() = runTest {
         assertEquals(1, viewModel.weatherState.value.weatherTileDataHistory.size)
         assertEquals(0, viewModel.weatherState.value.currentWeatherTileDataIndex)
         val layoutBefore = viewModel.weatherState.value.weatherTileData
@@ -150,7 +160,7 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun weatherViewModel_UndoLayoutChangeWhenPossible_ChangesLayout() {
+    fun weatherViewModel_UndoLayoutChangeWhenPossible_ChangesLayout() = runTest {
         val layoutBefore = viewModel.weatherState.value.weatherTileData
         viewModel.onWeatherScreenEvent(WeatherScreenEvent.DeleteTile(fakeWeatherTileData.first().tileId))
         assertEquals(1, viewModel.weatherState.value.currentWeatherTileDataIndex)
@@ -161,7 +171,7 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun weatherViewModel_RedoLayoutChangeWhenNotPossible_DoesNothing() {
+    fun weatherViewModel_RedoLayoutChangeWhenNotPossible_DoesNothing() = runTest {
         assertEquals(1, viewModel.weatherState.value.weatherTileDataHistory.size)
         assertEquals(0, viewModel.weatherState.value.currentWeatherTileDataIndex)
         val layoutBefore = viewModel.weatherState.value.weatherTileData
@@ -172,7 +182,7 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun weatherViewModel_RedoLayoutChangeWhenPossible_ChangesLayout() {
+    fun weatherViewModel_RedoLayoutChangeWhenPossible_ChangesLayout() = runTest {
         viewModel.onWeatherScreenEvent(WeatherScreenEvent.DeleteTile(fakeWeatherTileData.first().tileId))
         val layoutBefore = viewModel.weatherState.value.weatherTileData
         assertEquals(1, viewModel.weatherState.value.currentWeatherTileDataIndex)
@@ -184,7 +194,7 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun weatherViewModel_ResetLayoutWhenCurrentLayoutIsLatest_CorrectlyUpdatesState() {
+    fun weatherViewModel_ResetLayoutWhenCurrentLayoutIsLatest_CorrectlyUpdatesState() = runTest {
         val layoutBefore = viewModel.weatherState.value.weatherTileData
         repeat(5) {
             viewModel.onWeatherScreenEvent(WeatherScreenEvent.ShuffleTiles)
@@ -194,5 +204,45 @@ class WeatherViewModelTest {
         assertEquals(7, viewModel.weatherState.value.weatherTileDataHistory.size)
         assertEquals(6, viewModel.weatherState.value.currentWeatherTileDataIndex)
         assertEquals(layoutBefore, viewModel.weatherState.value.weatherTileData)
+    }
+
+    @Test
+    fun weatherViewModel_SaveCurrentLayout_SavesLayoutOnDevice() = runTest {
+        viewModel.onWeatherScreenEvent(WeatherScreenEvent.SaveLayout)
+        assertTrue(viewModel.weatherState.value.isSavingLayout)
+        delay(2000L) // Remove in the future
+        assertFalse(viewModel.weatherState.value.isSavingLayout)
+    }
+
+    @Test
+    fun weatherViewModel_SaveLayoutAndExitEditMode_SavesLayoutOnDeviceAndTogglesEditMode() = runTest {
+        viewModel.onWeatherScreenEvent(WeatherScreenEvent.ToggleEditMode(true))
+        assertTrue(viewModel.weatherState.value.isEditModeEnabled)
+        viewModel.onWeatherScreenEvent(WeatherScreenEvent.SaveLayoutAndExitEditMode)
+        assertTrue(viewModel.weatherState.value.isSavingLayout)
+        delay(2000L)
+        assertFalse(viewModel.weatherState.value.isSavingLayout)
+        assertFalse(viewModel.weatherState.value.isEditModeEnabled)
+    }
+
+    @Test
+    fun weatherViewModel_UpdateLayoutWhenAutoSaveEnabled_SavesLayoutOnDevice() = runTest {
+        viewModel.onWeatherScreenEvent(WeatherScreenEvent.ToggleAutoSave(true))
+        assertTrue(viewModel.weatherState.value.isAutoSaveEnabled)
+        viewModel.onWeatherScreenEvent(WeatherScreenEvent.ShuffleTiles)
+        delay(2000L)
+        assertTrue(viewModel.weatherState.value.isSavingLayout)
+        delay(2000L)
+        assertFalse(viewModel.weatherState.value.isSavingLayout)
+    }
+
+    @Test
+    fun weatherViewModel_ErrorWhenFetchingCurrentWeatherInfo_ShowsErrorMessage() = runTest {
+        weatherRepository = FakeWeatherRepository(shouldReturnError = true)
+        viewModel = WeatherViewModel(moveTileUseCase, deleteTileUseCase, saveLayoutInHistoryUseCase, resetLayoutUseCase, weatherRepository)
+        assertEquals(
+            (GetCurrentWeatherError.NetworkError.asUiText() as UiText.StringResource).resId,
+            (viewModel.weatherState.value.message as UiText.StringResource).resId
+        )
     }
 }

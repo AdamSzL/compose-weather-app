@@ -1,4 +1,4 @@
-package com.example.weatherapp.locations.domain
+package com.example.weatherapp.locations.domain.models
 
 import com.example.weatherapp.core.domain.Error
 

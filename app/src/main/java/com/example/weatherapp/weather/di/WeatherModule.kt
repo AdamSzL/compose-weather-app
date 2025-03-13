@@ -1,5 +1,7 @@
 package com.example.weatherapp.weather.di
 
+import com.example.weatherapp.weather.data.repository.FakeWeatherRepository
+import com.example.weatherapp.weather.data.repository.WeatherRepository
 import com.example.weatherapp.weather.domain.use_cases.DeleteTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.MoveTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.ResetLayoutUseCase
@@ -17,4 +19,8 @@ val weatherModule = module {
     singleOf(::MoveTileUseCase)
     singleOf(::SaveLayoutInHistoryUseCase)
     singleOf(::ResetLayoutUseCase)
+    single<WeatherRepository> {
+        FakeWeatherRepository()
+    }
+
 }

@@ -27,8 +27,8 @@ import coil3.compose.LocalAsyncImagePreviewHandler
 import com.example.weatherapp.R
 import com.example.weatherapp.core.presentation.utils.weatherIconUrl
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.example.weatherapp.weather.domain.WeatherHeaderInfo
-import com.example.weatherapp.weather.domain.toWeatherHeaderInfo
+import com.example.weatherapp.weather.domain.models.WeatherHeaderInfo
+import com.example.weatherapp.weather.domain.models.toWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherInfo
 import com.example.weatherapp.weather.presentation.weather.utils.capitalizeWords
 

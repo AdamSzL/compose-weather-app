@@ -1,4 +1,4 @@
-package com.example.weatherapp.weather.domain
+package com.example.weatherapp.weather.domain.models
 
 import java.util.UUID
 

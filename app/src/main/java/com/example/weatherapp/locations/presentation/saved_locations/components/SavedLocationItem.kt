@@ -46,14 +46,14 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.example.weatherapp.R
 import com.example.weatherapp.core.presentation.components.ConfirmAlertDialog
-import com.example.weatherapp.locations.domain.SavedLocation
-import com.example.weatherapp.locations.presentation.saved_locations.mock.mockSavedLocations
+import com.example.weatherapp.locations.domain.models.GeoLocation
+import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeSavedLocations
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import kotlinx.coroutines.delay
 
 @Composable
 fun SavedLocationItem(
-    savedLocation: SavedLocation,
+    location: GeoLocation,
     isSelected: Boolean,
     onSelect: () -> Unit,
     onDelete: () -> Unit,
@@ -85,7 +85,7 @@ fun SavedLocationItem(
         if (isSelected) MaterialTheme.colorScheme.primaryContainer else CardDefaults.elevatedCardColors().containerColor,
         label = "color"
     )
-    val fullLocationName = if (savedLocation.country != null) "${savedLocation.name}, ${savedLocation.country}" else savedLocation.name
+    val fullLocationName = if (location.address.country != null) "${location.address.name}, ${location.address.country}" else location.address.name
 
     LaunchedEffect(key1 = isRemoved) {
         if (isRemoved) {
@@ -222,7 +222,7 @@ private fun SavedLocationItemPreview(
 ) {
     WeatherAppTheme {
         SavedLocationItem(
-            savedLocation = mockSavedLocations.first(),
+            location = fakeSavedLocations.first(),
             isSelected = isSelected,
             onSelect = {},
             onDelete = {}

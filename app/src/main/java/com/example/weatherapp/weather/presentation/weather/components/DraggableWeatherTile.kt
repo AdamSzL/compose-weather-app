@@ -14,7 +14,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.example.weatherapp.weather.domain.WeatherTileData
+import com.example.weatherapp.weather.domain.models.WeatherTileData
 import kotlin.math.roundToInt
 
 @Composable

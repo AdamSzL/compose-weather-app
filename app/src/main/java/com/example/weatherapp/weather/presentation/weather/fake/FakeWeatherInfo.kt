@@ -1,8 +1,8 @@
 package com.example.weatherapp.weather.presentation.weather.fake
 
-import com.example.weatherapp.weather.domain.WeatherInfo
-import com.example.weatherapp.weather.domain.toWeatherHeaderInfo
-import com.example.weatherapp.weather.domain.toWeatherTileDataList
+import com.example.weatherapp.weather.domain.models.WeatherInfo
+import com.example.weatherapp.weather.domain.models.toWeatherHeaderInfo
+import com.example.weatherapp.weather.domain.models.toWeatherTileDataList
 
 val fakeWeatherInfo = WeatherInfo(
     cityName = "Province of Turin",

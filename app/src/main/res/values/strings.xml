@@ -81,4 +81,6 @@
     <string name="south_west">South West</string>
     <string name="west">West</string>
     <string name="north_west">North West</string>
+    <string name="location_permission_not_granted">Location Permission Not Granted</string>
+    <string name="network_error">Network error. Try again later.</string>
 </resources>

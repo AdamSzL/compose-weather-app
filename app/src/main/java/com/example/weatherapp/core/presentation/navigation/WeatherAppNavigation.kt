@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
+import com.example.weatherapp.locations.domain.models.GeoPoint
 import com.example.weatherapp.locations.presentation.location_search.LocationSearchScreen
 import com.example.weatherapp.locations.presentation.map.LocationMapScreen
 import com.example.weatherapp.locations.presentation.saved_locations.LocationsScreen
@@ -121,9 +122,12 @@ fun WeatherAppNavigation(
                 val locationsViewModel = koinViewModel<LocationsViewModel>()
                 val locationsState by locationsViewModel.locationsState.collectAsStateWithLifecycle()
                 val selectedMapLocationLatLng = backStackEntry.savedStateHandle.get<Pair<Double, Double>>("selected_location")
+                val selectedMapLocation = if (selectedMapLocationLatLng != null) {
+                    GeoPoint(selectedMapLocationLatLng.first, selectedMapLocationLatLng.second)
+                } else null
                 LocationsScreen(
                     locationsState = locationsState,
-                    selectedMapLocationLatLng = selectedMapLocationLatLng,
+                    selectedMapLocation = selectedMapLocation,
                     onLocationScreenEvent = {
                         when (it) {
                             LocationsScreenEvent.NavigateToLocationMap -> navController.navigate(WeatherAppScreen.LocationMapScreen)

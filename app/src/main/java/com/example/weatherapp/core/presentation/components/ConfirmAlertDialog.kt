@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
-import com.example.weatherapp.locations.presentation.saved_locations.mock.mockSavedLocations
+import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeSavedLocations
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,7 +72,7 @@ private fun ConfirmAlertDialogPreview() {
     WeatherAppTheme {
         ConfirmAlertDialog(
             title = stringResource(R.string.delete_location),
-            text = stringResource(R.string.delete_location_confirmation, mockSavedLocations.first().name),
+            text = stringResource(R.string.delete_location_confirmation, fakeSavedLocations.first().address.name),
             icon = Icons.Default.Delete,
             onDismissRequest = {},
             onConfirmation = {}

@@ -1,4 +1,4 @@
-package com.example.weatherapp.weather.domain
+package com.example.weatherapp.weather.domain.models
 
 data class WeatherHeaderInfo(
     val cityName: String,

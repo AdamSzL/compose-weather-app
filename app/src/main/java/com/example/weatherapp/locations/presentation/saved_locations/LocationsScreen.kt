@@ -26,16 +26,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
 import com.example.weatherapp.core.presentation.UiText
+import com.example.weatherapp.locations.domain.models.GeoPoint
 import com.example.weatherapp.locations.presentation.components.AddLocationFloatingActionButton
 import com.example.weatherapp.locations.presentation.saved_locations.components.SavedLocationList
-import com.example.weatherapp.locations.presentation.saved_locations.mock.mockSavedLocations
+import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeSavedLocations
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationsScreen(
     locationsState: LocationsState,
-    selectedMapLocationLatLng: Pair<Double, Double>?,
+    selectedMapLocation: GeoPoint?,
     onLocationScreenEvent: (LocationsScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -52,8 +53,8 @@ fun LocationsScreen(
         }
     }
 
-    LaunchedEffect(selectedMapLocationLatLng) {
-        selectedMapLocationLatLng?.let {
+    LaunchedEffect(selectedMapLocation) {
+        selectedMapLocation?.let {
             onLocationScreenEvent(LocationsScreenEvent.AddMapLocation(it))
             onLocationScreenEvent(LocationsScreenEvent.ResetSavedMapLocation)
         }
@@ -152,10 +153,10 @@ private fun LocationsScreenPreview() {
     WeatherAppTheme {
         LocationsScreen(
             locationsState = LocationsState(
-                savedLocations = mockSavedLocations,
-                selectedLocationId = mockSavedLocations.first().id,
+                savedLocations = fakeSavedLocations,
+                selectedLocationId = fakeSavedLocations.first().id,
             ),
-            selectedMapLocationLatLng = null,
+            selectedMapLocation = null,
             onLocationScreenEvent = {}
         )
     }

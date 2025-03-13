@@ -1,6 +1,7 @@
 package com.example.weatherapp.locations.presentation.saved_locations
 
 import com.example.weatherapp.core.presentation.UiText
+import com.example.weatherapp.locations.domain.models.GeoPoint
 
 sealed class LocationsScreenEvent {
 
@@ -8,7 +9,7 @@ sealed class LocationsScreenEvent {
 
     data object NavigateToLocationSearch: LocationsScreenEvent()
 
-    data class AddMapLocation(val latLng: Pair<Double, Double>): LocationsScreenEvent()
+    data class AddMapLocation(val coordinates: GeoPoint): LocationsScreenEvent()
 
     data class DeleteLocation(val locationId: String): LocationsScreenEvent()
 
