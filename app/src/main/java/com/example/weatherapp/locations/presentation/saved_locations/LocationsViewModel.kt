@@ -1,18 +1,19 @@
 package com.example.weatherapp.locations.presentation.saved_locations
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.R
+import com.example.weatherapp.core.data.repository.WeatherRepository
 import com.example.weatherapp.core.domain.Result
+import com.example.weatherapp.core.domain.error.asUiText
+import com.example.weatherapp.core.domain.model.GeoLocation
+import com.example.weatherapp.core.domain.model.GeoPoint
 import com.example.weatherapp.core.presentation.UiText
 import com.example.weatherapp.locations.data.repository.LocationRepository
-import com.example.weatherapp.locations.domain.models.GeoLocation
-import com.example.weatherapp.locations.domain.models.GeoPoint
+import com.example.weatherapp.locations.domain.models.LocationWeatherBrief
 import com.example.weatherapp.locations.domain.models.asUiText
 import com.example.weatherapp.locations.domain.use_cases.DeleteLocationUseCase
 import com.example.weatherapp.locations.domain.use_cases.ReverseGeocodeUseCase
-import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeUserLocation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -21,7 +22,8 @@ import kotlinx.coroutines.launch
 class LocationsViewModel(
     private val deleteLocationUseCase: DeleteLocationUseCase,
     private val reverseGeocodeUseCase: ReverseGeocodeUseCase,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val weatherRepository: WeatherRepository
 ): ViewModel() {
 
     private val _locationsState = MutableStateFlow(LocationsState())
@@ -34,7 +36,6 @@ class LocationsViewModel(
     fun onLocationsScreenEvent(locationsScreenEvent: LocationsScreenEvent) {
         when (locationsScreenEvent) {
             is LocationsScreenEvent.DeleteLocation -> deleteLocation(locationsScreenEvent.locationId)
-            is LocationsScreenEvent.SetLocationAsActive -> setLocationAsActive(locationsScreenEvent.locationId)
             is LocationsScreenEvent.ShowSnackbar -> showMessage(locationsScreenEvent.message)
             is LocationsScreenEvent.ResetMessage -> showMessage(null)
             is LocationsScreenEvent.FetchUserLocation -> fetchUserLocation()
@@ -45,9 +46,25 @@ class LocationsViewModel(
 
     private fun fetchSavedLocations() {
         viewModelScope.launch {
-            val savedLocations = locationRepository.getSavedLocations()
+            val locations = locationRepository.getSavedLocations()
+            val updatedLocations = locations.map { locationWeatherBrief ->
+                val briefWeatherResult = weatherRepository.getBriefWeather(locationWeatherBrief.location.coordinates)
+                when (briefWeatherResult) {
+                    is Result.Success -> {
+                        LocationWeatherBrief(
+                            id = locationWeatherBrief.id,
+                            location = locationWeatherBrief.location,
+                            weatherBrief = briefWeatherResult.data,
+                        )
+                    }
+                    is Result.Error -> {
+                        showMessage(briefWeatherResult.error.asUiText())
+                        locationWeatherBrief
+                    }
+                }
+            }
             _locationsState.update {
-                it.copy(savedLocations = savedLocations)
+                it.copy(locations = updatedLocations)
             }
         }
     }
@@ -67,9 +84,10 @@ class LocationsViewModel(
 
     private fun addLocation(location: GeoLocation, shouldIncludeMessage: Boolean = false) {
         val message = if (shouldIncludeMessage) UiText.StringResource(R.string.location_successfully_added) else null
+        val locationWeatherBrief = LocationWeatherBrief(location = location, weatherBrief = null)
         _locationsState.update {
             it.copy(
-                savedLocations = it.savedLocations + location,
+                locations = it.locations + locationWeatherBrief,
                 message = message
             )
         }
@@ -77,13 +95,7 @@ class LocationsViewModel(
 
     private fun deleteLocation(locationId: String) {
         _locationsState.update {
-            it.copy(savedLocations = deleteLocationUseCase(it.savedLocations, locationId))
-        }
-    }
-
-    private fun setLocationAsActive(locationId: String) {
-        _locationsState.update {
-            it.copy(selectedLocationId = locationId)
+            it.copy(locations = deleteLocationUseCase(it.locations, locationId))
         }
     }
 

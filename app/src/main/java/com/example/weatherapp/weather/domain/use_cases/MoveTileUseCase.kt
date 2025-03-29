@@ -1,6 +1,6 @@
 package com.example.weatherapp.weather.domain.use_cases
 
-import com.example.weatherapp.weather.domain.models.WeatherTileData
+import com.example.weatherapp.weather.presentation.model.WeatherTileData
 
 class MoveTileUseCase {
     operator fun invoke(tiles: List<WeatherTileData>, from: Int, to: Int): List<WeatherTileData> {

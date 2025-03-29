@@ -1,8 +1,8 @@
 package com.example.weatherapp.weather.presentation.weather
 
 import com.example.weatherapp.core.presentation.UiText
-import com.example.weatherapp.weather.domain.models.WeatherHeaderInfo
-import com.example.weatherapp.weather.domain.models.WeatherTileData
+import com.example.weatherapp.weather.presentation.model.WeatherHeaderInfo
+import com.example.weatherapp.weather.presentation.model.WeatherTileData
 import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherTileData
 

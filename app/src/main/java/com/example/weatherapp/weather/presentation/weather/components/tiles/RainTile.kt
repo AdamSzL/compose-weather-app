@@ -23,7 +23,7 @@ fun RainTile(
 
 @Preview(showBackground = true)
 @Composable
-private fun PrecipitationTilePreview() {
+private fun RainTilePreview() {
     WeatherAppTheme {
         RainTile(
             rain = 2.73,

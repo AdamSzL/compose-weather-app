@@ -1,5 +1,7 @@
 package com.example.weatherapp.locations.presentation.saved_locations
 
+import com.example.weatherapp.core.data.repository.FakeWeatherRepository
+import com.example.weatherapp.core.data.repository.WeatherRepository
 import com.example.weatherapp.core.presentation.UiText
 import com.example.weatherapp.core.utils.MainDispatcherRule
 import com.example.weatherapp.locations.data.repository.FakeLocationRepository
@@ -8,7 +10,7 @@ import com.example.weatherapp.locations.domain.models.FetchUserLocationError
 import com.example.weatherapp.locations.domain.models.asUiText
 import com.example.weatherapp.locations.domain.use_cases.DeleteLocationUseCase
 import com.example.weatherapp.locations.domain.use_cases.ReverseGeocodeUseCase
-import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeSavedLocations
+import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeLocations
 import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeUserLocation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,6 +31,7 @@ class LocationsViewModelTest {
     private lateinit var viewModel: LocationsViewModel
     private lateinit var deleteLocationUseCase: DeleteLocationUseCase
     private lateinit var reverseGeocodeUseCase: ReverseGeocodeUseCase
+    private lateinit var weatherRepository: WeatherRepository
     private lateinit var locationRepository: LocationRepository
 
     @get:Rule
@@ -38,38 +41,31 @@ class LocationsViewModelTest {
     fun setUp() {
         deleteLocationUseCase = DeleteLocationUseCase()
         locationRepository = FakeLocationRepository()
+        weatherRepository = FakeWeatherRepository()
         reverseGeocodeUseCase = ReverseGeocodeUseCase(locationRepository)
-        viewModel = LocationsViewModel(deleteLocationUseCase, reverseGeocodeUseCase, locationRepository)
+        viewModel = LocationsViewModel(deleteLocationUseCase, reverseGeocodeUseCase, locationRepository, weatherRepository)
     }
 
     @Test
     fun locationsViewModel_SetSavedLocations_UpdatesSavedLocationsState() = runTest {
-        assertEquals(fakeSavedLocations.size, viewModel.locationsState.value.savedLocations.size)
-        assertEquals(fakeSavedLocations, viewModel.locationsState.value.savedLocations)
+        assertEquals(fakeLocations.size, viewModel.locationsState.value.locations.size)
+        assertEquals(fakeLocations, viewModel.locationsState.value.locations)
     }
 
     @Test
     fun locationsViewModel_AddMapLocation_CorrectlyAddsLocationToSavedLocations() = runTest {
-        assertEquals(fakeSavedLocations.size, viewModel.locationsState.value.savedLocations.size)
-        viewModel.onLocationsScreenEvent(LocationsScreenEvent.AddMapLocation(fakeUserLocation.coordinates))
-        assertEquals(fakeSavedLocations.size + 1, viewModel.locationsState.value.savedLocations.size)
-        assertTrue(viewModel.locationsState.value.savedLocations.last().coordinates == fakeUserLocation.coordinates)
+        assertEquals(fakeLocations.size, viewModel.locationsState.value.locations.size)
+        viewModel.onLocationsScreenEvent(LocationsScreenEvent.AddMapLocation(fakeUserLocation.location.coordinates))
+        assertEquals(fakeLocations.size + 1, viewModel.locationsState.value.locations.size)
+        assertTrue(viewModel.locationsState.value.locations.last().location.coordinates == fakeUserLocation.location.coordinates)
     }
 
     @Test
     fun locationsViewModel_DeleteLocation_CorrectlyRemovesLocationFromSavedLocations() = runTest {
-        assertEquals(fakeSavedLocations.size, viewModel.locationsState.value.savedLocations.size)
-        viewModel.onLocationsScreenEvent(LocationsScreenEvent.DeleteLocation(fakeSavedLocations.first().id))
-        assertEquals(fakeSavedLocations.size - 1, viewModel.locationsState.value.savedLocations.size)
-        assertFalse(viewModel.locationsState.value.savedLocations.contains(fakeSavedLocations.first()))
-    }
-
-    @Test
-    fun locationsViewModel_SetLocationAsActive_CorrectlySetsSelectedLocationId() {
-        viewModel.onLocationsScreenEvent(LocationsScreenEvent.SetLocationAsActive(fakeSavedLocations.first().id))
-        assertEquals(fakeSavedLocations.first().id, viewModel.locationsState.value.selectedLocationId)
-        viewModel.onLocationsScreenEvent(LocationsScreenEvent.SetLocationAsActive(fakeSavedLocations.last().id))
-        assertEquals(fakeSavedLocations.last().id, viewModel.locationsState.value.selectedLocationId)
+        assertEquals(fakeLocations.size, viewModel.locationsState.value.locations.size)
+        viewModel.onLocationsScreenEvent(LocationsScreenEvent.DeleteLocation(fakeLocations.first().id))
+        assertEquals(fakeLocations.size - 1, viewModel.locationsState.value.locations.size)
+        assertFalse(viewModel.locationsState.value.locations.contains(fakeLocations.first()))
     }
 
     @Test
@@ -84,14 +80,14 @@ class LocationsViewModelTest {
     @Test
     fun locationsViewModel_FetchUserLocation_CorrectlyAddsUserLocationToSavedLocations() = runTest {
         viewModel.onLocationsScreenEvent(LocationsScreenEvent.FetchUserLocation)
-        assertEquals(fakeSavedLocations.size + 1, viewModel.locationsState.value.savedLocations.size)
-        assertTrue(viewModel.locationsState.value.savedLocations.last().coordinates == fakeUserLocation.coordinates)
+        assertEquals(fakeLocations.size + 1, viewModel.locationsState.value.locations.size)
+        assertTrue(viewModel.locationsState.value.locations.last().location.coordinates == fakeUserLocation.location.coordinates)
     }
 
     @Test
     fun locationsViewModel_FetchUserLocation_SetsErrorMessageWhenPermissionNotGranted() = runTest {
         locationRepository = FakeLocationRepository(shouldReturnError = true)
-        viewModel = LocationsViewModel(deleteLocationUseCase, reverseGeocodeUseCase, locationRepository)
+        viewModel = LocationsViewModel(deleteLocationUseCase, reverseGeocodeUseCase, locationRepository, weatherRepository)
         viewModel.onLocationsScreenEvent(LocationsScreenEvent.FetchUserLocation)
         assertEquals(
             (FetchUserLocationError.LocationPermissionNotGranted.asUiText() as UiText.StringResource).resId,

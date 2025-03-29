@@ -3,7 +3,6 @@ package com.example.weatherapp.locations.presentation.saved_locations
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -21,15 +20,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
+import com.example.weatherapp.core.domain.model.GeoPoint
 import com.example.weatherapp.core.presentation.UiText
-import com.example.weatherapp.locations.domain.models.GeoPoint
 import com.example.weatherapp.locations.presentation.components.AddLocationFloatingActionButton
-import com.example.weatherapp.locations.presentation.saved_locations.components.SavedLocationList
-import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeSavedLocations
+import com.example.weatherapp.locations.presentation.saved_locations.components.WeatherBriefList
+import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeLocations
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -88,7 +86,7 @@ fun LocationsScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.saved_Locations)
+                        text = stringResource(R.string.locations)
                     )
                 }
             )
@@ -114,7 +112,6 @@ fun LocationsScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
         Box(
@@ -122,17 +119,15 @@ fun LocationsScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            SavedLocationList(
-                savedLocations = locationsState.savedLocations,
-                selectedLocationId = locationsState.selectedLocationId,
-                onSetLocationAsActive = {
-                    onLocationScreenEvent(LocationsScreenEvent.SetLocationAsActive(it))
+            WeatherBriefList(
+                locations = locationsState.locations,
+                onNavigateToWeatherScreen = {
+                    onLocationScreenEvent(LocationsScreenEvent.NavigateToWeatherScreen(it))
                 },
                 onLocationDelete = {
                     onLocationScreenEvent(LocationsScreenEvent.DeleteLocation(it))
                 },
                 modifier = Modifier.fillMaxSize()
-                    .padding(top = dimensionResource(R.dimen.padding_medium))
             )
 
             if (isFabExpanded) {
@@ -153,8 +148,7 @@ private fun LocationsScreenPreview() {
     WeatherAppTheme {
         LocationsScreen(
             locationsState = LocationsState(
-                savedLocations = fakeSavedLocations,
-                selectedLocationId = fakeSavedLocations.first().id,
+                locations = fakeLocations
             ),
             selectedMapLocation = null,
             onLocationScreenEvent = {}

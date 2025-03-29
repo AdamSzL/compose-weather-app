@@ -27,8 +27,10 @@ import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.printToLog
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.weatherapp.R
+import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeUserLocation
+import com.example.weatherapp.weather.presentation.weather.fake.fakeDetailedWeather
 import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherHeaderInfo
-import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherInfo
+import com.example.weatherapp.weather.presentation.weather.fake.fakeDetailedWeather
 import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherTileData
 import com.example.weatherapp.weather.presentation.weather.utils.capitalizeWords
 import com.example.weatherapp.weather.presentation.weather.utils.convertTimestampToHourMinute
@@ -52,6 +54,7 @@ class WeatherScreenUITest {
     fun weatherScreen_weatherDataIsDisplayedCorrectly() {
         composeTestRule.setContent {
             WeatherScreen(
+                location = fakeUserLocation.location,
                 weatherState = WeatherState(
                     weatherHeaderInfo = fakeWeatherHeaderInfo,
                     weatherTileData = fakeWeatherTileData
@@ -61,12 +64,10 @@ class WeatherScreenUITest {
         }
 
         val weatherHeaderTexts = listOf(
-            "${fakeWeatherInfo.cityName}, ${fakeWeatherInfo.country}",
-            fakeWeatherInfo.weatherDescription.capitalizeWords(),
-            "${fakeWeatherInfo.temperature}°C",
-            "${fakeWeatherInfo.minTemperature}°C",
-            "${fakeWeatherInfo.maxTemperature}°C",
-            context.getString(R.string.feels_like, fakeWeatherInfo.feelsLike),
+            "${fakeUserLocation.location.address.name}, ${fakeUserLocation.location.address.country}",
+            fakeWeatherHeaderInfo.description.capitalizeWords(),
+            "${fakeWeatherHeaderInfo.temperature}°C",
+            context.getString(R.string.feels_like, fakeWeatherHeaderInfo.feelsLike),
         )
 
         weatherHeaderTexts.forEach { text ->
@@ -84,6 +85,7 @@ class WeatherScreenUITest {
             context.getString(R.string.humidity),
             context.getString(R.string.cloudiness),
             context.getString(R.string.visibility),
+            context.getString(R.string.uv_index),
             context.getString(R.string.sunrise),
             context.getString(R.string.sunset),
         )
@@ -99,15 +101,16 @@ class WeatherScreenUITest {
         }
 
         val weatherTileValues = listOf(
-            Pair("%.2f".format(fakeWeatherInfo.windSpeed), 1),
-            Pair("%.2f".format(fakeWeatherInfo.rain), 3),
-            Pair("%.2f".format(fakeWeatherInfo.snow), 4),
-            Pair(fakeWeatherInfo.pressure.toString(), 5),
-            Pair(fakeWeatherInfo.humidity.toString(), 6),
-            Pair(fakeWeatherInfo.cloudiness.toString(), 7),
-            Pair(fakeWeatherInfo.visibility.toString(), 8),
-            Pair(convertTimestampToHourMinute(fakeWeatherInfo.sunrise), 9),
-            Pair(convertTimestampToHourMinute(fakeWeatherInfo.sunset), 10),
+            Pair("%.2f".format(fakeDetailedWeather.windSpeed), 1),
+            Pair("%.2f".format(fakeDetailedWeather.rain), 3),
+            Pair("%.2f".format(fakeDetailedWeather.snow), 4),
+            Pair(fakeDetailedWeather.pressure.toString(), 5),
+            Pair(fakeDetailedWeather.humidity.toString(), 6),
+            Pair(fakeDetailedWeather.clouds.toString(), 7),
+            Pair("%.1f".format(fakeDetailedWeather.visibility), 8),
+            Pair(fakeDetailedWeather.uvi.toString(), 9),
+            Pair(convertTimestampToHourMinute(fakeDetailedWeather.sunrise), 10),
+            Pair(convertTimestampToHourMinute(fakeDetailedWeather.sunset), 11),
         )
 
         weatherTileValues.forEach { (value, index) ->
@@ -127,6 +130,7 @@ class WeatherScreenUITest {
 
         composeTestRule.setContent {
             WeatherScreen(
+                location = fakeUserLocation.location,
                 weatherState = WeatherState(
                     weatherHeaderInfo = fakeWeatherHeaderInfo,
                     weatherTileData = fakeWeatherTileData,
@@ -183,6 +187,7 @@ class WeatherScreenUITest {
 
         composeTestRule.setContent {
             WeatherScreen(
+                location = fakeUserLocation.location,
                 weatherState = WeatherState(
                     weatherHeaderInfo = fakeWeatherHeaderInfo,
                     weatherTileData = weatherTileData.value,
@@ -231,11 +236,11 @@ class WeatherScreenUITest {
             .performScrollToIndex(1)
 
         composeTestRule
-            .onNodeWithText("%.2f".format(fakeWeatherInfo.windSpeed))
+            .onNodeWithText("%.2f".format(fakeDetailedWeather.windSpeed))
             .performClick()
 
         composeTestRule
-            .onNodeWithText("%.2f".format(fakeWeatherInfo.windSpeed))
+            .onNodeWithText("%.2f".format(fakeDetailedWeather.windSpeed))
             .assertIsNotDisplayed()
     }
 
@@ -246,6 +251,7 @@ class WeatherScreenUITest {
 
         composeTestRule.setContent {
             WeatherScreen(
+                location = fakeUserLocation.location,
                 weatherState = WeatherState(
                     weatherHeaderInfo = fakeWeatherHeaderInfo,
                     weatherTileData = fakeWeatherTileData,

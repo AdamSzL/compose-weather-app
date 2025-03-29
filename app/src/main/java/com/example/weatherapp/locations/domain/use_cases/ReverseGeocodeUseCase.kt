@@ -1,10 +1,10 @@
 package com.example.weatherapp.locations.domain.use_cases
 
 import com.example.weatherapp.core.domain.Result
+import com.example.weatherapp.core.domain.model.GeoAddress
+import com.example.weatherapp.core.domain.model.GeoLocation
+import com.example.weatherapp.core.domain.model.GeoPoint
 import com.example.weatherapp.locations.data.repository.LocationRepository
-import com.example.weatherapp.locations.domain.models.GeoAddress
-import com.example.weatherapp.locations.domain.models.GeoLocation
-import com.example.weatherapp.locations.domain.models.GeoPoint
 
 class ReverseGeocodeUseCase(
     private val locationRepository: LocationRepository

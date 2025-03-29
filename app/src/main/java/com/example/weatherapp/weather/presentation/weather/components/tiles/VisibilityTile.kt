@@ -6,16 +6,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.example.weatherapp.weather.presentation.weather.components.WeatherValueUnitTile
+import com.example.weatherapp.weather.presentation.weather.fake.fakeDetailedWeather
 
 @Composable
 fun VisibilityTile(
-    visibility: Int,
+    visibility: Double,
     modifier: Modifier = Modifier
 ) {
     WeatherValueUnitTile(
         tileHeaderIcon = R.drawable.ic_visibility,
         tileHeaderText = R.string.visibility,
-        value = visibility.toString(),
+        value = "%.1f".format(visibility),
         unit = R.string.km,
         modifier = modifier
     )
@@ -26,7 +27,7 @@ fun VisibilityTile(
 private fun VisibilityTilePreview() {
     WeatherAppTheme {
         VisibilityTile(
-            visibility = 10
+            visibility = fakeDetailedWeather.visibility
         )
     }
 }

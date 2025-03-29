@@ -1,29 +1,33 @@
 package com.example.weatherapp.weather.presentation.weather
 
-sealed class WeatherScreenEvent {
+sealed interface WeatherScreenEvent {
 
-    data class ToggleEditMode(val enabled: Boolean): WeatherScreenEvent()
+    data object NavigateBack: WeatherScreenEvent
 
-    data class ToggleDeleteMode(val enabled: Boolean): WeatherScreenEvent()
+    data class ToggleEditMode(val enabled: Boolean): WeatherScreenEvent
 
-    data class ToggleTilesLock(val locked: Boolean): WeatherScreenEvent()
+    data class ToggleDeleteMode(val enabled: Boolean): WeatherScreenEvent
 
-    data class MoveTile(val from: Int, val to: Int): WeatherScreenEvent()
+    data class ToggleTilesLock(val locked: Boolean): WeatherScreenEvent
 
-    data class DeleteTile(val tileId: String): WeatherScreenEvent()
+    data class MoveTile(val from: Int, val to: Int): WeatherScreenEvent
 
-    data object ShuffleTiles: WeatherScreenEvent()
+    data class DeleteTile(val tileId: String): WeatherScreenEvent
 
-    data class ToggleAutoSave(val checked: Boolean): WeatherScreenEvent()
+    data object ShuffleTiles: WeatherScreenEvent
 
-    data object SaveLayout: WeatherScreenEvent()
+    data class ToggleAutoSave(val checked: Boolean): WeatherScreenEvent
 
-    data object ResetLayout: WeatherScreenEvent()
+    data object SaveLayout: WeatherScreenEvent
 
-    data object UndoLayoutChange: WeatherScreenEvent()
+    data object ResetLayout: WeatherScreenEvent
 
-    data object RedoLayoutChange: WeatherScreenEvent()
+    data object UndoLayoutChange: WeatherScreenEvent
 
-    data object SaveLayoutAndExitEditMode: WeatherScreenEvent()
+    data object RedoLayoutChange: WeatherScreenEvent
+
+    data object SaveLayoutAndExitEditMode: WeatherScreenEvent
+
+    data object ResetMessage: WeatherScreenEvent
 
 }

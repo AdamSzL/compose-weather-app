@@ -6,7 +6,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.example.weatherapp.weather.presentation.weather.components.WeatherValueUnitTile
-import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherInfo
+import com.example.weatherapp.weather.presentation.weather.fake.fakeDetailedWeather
 import com.example.weatherapp.weather.presentation.weather.utils.convertTimestampToHourMinute
 
 @Composable
@@ -27,7 +27,7 @@ fun SunsetTile(
 private fun SunsetTilePreview() {
     WeatherAppTheme {
         SunsetTile(
-            sunset = fakeWeatherInfo.sunset,
+            sunset = fakeDetailedWeather.sunset,
         )
     }
 }

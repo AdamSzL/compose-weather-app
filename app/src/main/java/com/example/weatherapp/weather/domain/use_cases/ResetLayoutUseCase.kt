@@ -1,6 +1,6 @@
 package com.example.weatherapp.weather.domain.use_cases
 
-import com.example.weatherapp.weather.domain.models.WeatherTileData
+import com.example.weatherapp.weather.presentation.model.WeatherTileData
 
 class ResetLayoutUseCase {
     operator fun invoke(weatherTileDataHistory: List<List<WeatherTileData>>, currentWeatherTileDataIndex: Int): Triple<List<List<WeatherTileData>>, List<WeatherTileData>, Int> {

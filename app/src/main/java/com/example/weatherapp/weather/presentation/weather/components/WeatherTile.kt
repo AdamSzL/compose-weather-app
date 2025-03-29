@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.example.weatherapp.weather.domain.models.WeatherTileData
+import com.example.weatherapp.weather.presentation.model.WeatherTileData
 import com.example.weatherapp.weather.presentation.weather.components.tiles.CloudinessTile
 import com.example.weatherapp.weather.presentation.weather.components.tiles.HumidityTile
 import com.example.weatherapp.weather.presentation.weather.components.tiles.PressureTile
@@ -12,6 +12,7 @@ import com.example.weatherapp.weather.presentation.weather.components.tiles.Rain
 import com.example.weatherapp.weather.presentation.weather.components.tiles.SnowTile
 import com.example.weatherapp.weather.presentation.weather.components.tiles.SunriseTile
 import com.example.weatherapp.weather.presentation.weather.components.tiles.SunsetTile
+import com.example.weatherapp.weather.presentation.weather.components.tiles.UviTile
 import com.example.weatherapp.weather.presentation.weather.components.tiles.VisibilityTile
 import com.example.weatherapp.weather.presentation.weather.components.tiles.WindDirectionTile
 import com.example.weatherapp.weather.presentation.weather.components.tiles.WindSpeedTile
@@ -79,6 +80,12 @@ fun WeatherTile(
         is WeatherTileData.WindDirection -> {
             WindDirectionTile(
                 windDirection = tileData.windDirection,
+                modifier = modifier
+            )
+        }
+        is WeatherTileData.Uvi -> {
+            UviTile(
+                uvi = tileData.uvi,
                 modifier = modifier
             )
         }

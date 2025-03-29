@@ -3,7 +3,6 @@ package com.example.weatherapp.core.presentation.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -13,10 +12,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
-import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeSavedLocations
+import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeLocations
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfirmAlertDialog(
     title: String,
@@ -72,7 +70,7 @@ private fun ConfirmAlertDialogPreview() {
     WeatherAppTheme {
         ConfirmAlertDialog(
             title = stringResource(R.string.delete_location),
-            text = stringResource(R.string.delete_location_confirmation, fakeSavedLocations.first().address.name),
+            text = stringResource(R.string.delete_location_confirmation, fakeLocations.first().location.address.name),
             icon = Icons.Default.Delete,
             onDismissRequest = {},
             onConfirmation = {}

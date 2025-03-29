@@ -1,4 +1,4 @@
-package com.example.weatherapp.weather.domain.models
+package com.example.weatherapp.weather.presentation.model
 
 import java.util.UUID
 
@@ -33,7 +33,11 @@ sealed class WeatherTileData(val tileId: String = UUID.randomUUID().toString()) 
     ) : WeatherTileData()
 
     data class Visibility(
-        val visibility: Int
+        val visibility: Double
+    ) : WeatherTileData()
+
+    data class Uvi(
+        val uvi: Double
     ) : WeatherTileData()
 
     data class Sunrise(

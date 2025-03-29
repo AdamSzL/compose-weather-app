@@ -83,4 +83,18 @@
     <string name="north_west">North West</string>
     <string name="location_permission_not_granted">Location Permission Not Granted</string>
     <string name="network_error">Network error. Try again later.</string>
+    <string name="go_back_to_locations">Go back to saved locations</string>
+    <string name="degrees">%d°</string>
+    <string name="temperature_missing">Temperature is missing</string>
+    <string name="dash">-</string>
+    <string name="weather_details_missing">Weather details are missing</string>
+    <string name="no_data">No weather data</string>
+    <string name="server_error">Server error occurred. Try again later.</string>
+    <string name="unknown_error">Unknown error occurred. Try again later.</string>
+    <string name="uv_index">UV index</string>
+    <string name="uvi_risk_low">Low</string>
+    <string name="uvi_risk_moderate">Moderate</string>
+    <string name="uvi_risk_high">High</string>
+    <string name="uvi_risk_very_high">Very high</string>
+    <string name="uvi_risk_extreme">Extreme</string>
 </resources>
