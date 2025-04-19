@@ -32,7 +32,7 @@ class LocationListViewModel(
     val locationsState = _locationListState.asStateFlow()
 
     init {
-//        fetchSavedLocations()
+        fetchSavedLocations()
     }
 
     fun onLocationsScreenEvent(locationListScreenEvent: LocationListScreenEvent) {
@@ -49,24 +49,24 @@ class LocationListViewModel(
     private fun fetchSavedLocations() {
         viewModelScope.launch {
             val locations = savedLocationsRepository.getSavedLocations()
-            val updatedLocations = locations.map { locationWeatherBrief ->
-                val briefWeatherResult = weatherRepository.getBriefWeather(locationWeatherBrief.location.coordinates)
-                when (briefWeatherResult) {
-                    is Result.Success -> {
-                        LocationWeatherBrief(
-                            id = locationWeatherBrief.id,
-                            location = locationWeatherBrief.location,
-                            weatherBrief = briefWeatherResult.data,
-                        )
-                    }
-                    is Result.Error -> {
-                        showMessage(briefWeatherResult.error.asUiText())
-                        locationWeatherBrief
-                    }
-                }
-            }
+//            val updatedLocations = locations.map { locationWeatherBrief ->
+//                val briefWeatherResult = weatherRepository.getBriefWeather(locationWeatherBrief.location.coordinates)
+//                when (briefWeatherResult) {
+//                    is Result.Success -> {
+//                        LocationWeatherBrief(
+//                            id = locationWeatherBrief.id,
+//                            location = locationWeatherBrief.location,
+//                            weatherBrief = briefWeatherResult.data,
+//                        )
+//                    }
+//                    is Result.Error -> {
+//                        showMessage(briefWeatherResult.error.asUiText())
+//                        locationWeatherBrief
+//                    }
+//                }
+//            }
             _locationListState.update {
-                it.copy(locations = updatedLocations)
+                it.copy(locations = locations)
             }
         }
     }
