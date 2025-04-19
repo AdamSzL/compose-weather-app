@@ -97,4 +97,5 @@
     <string name="uvi_risk_high">High</string>
     <string name="uvi_risk_very_high">Very high</string>
     <string name="uvi_risk_extreme">Extreme</string>
+    <string name="search_for_city_or_place">Search for city or place</string>
 </resources>

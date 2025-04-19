@@ -6,15 +6,15 @@ import com.example.weatherapp.core.data.repository.FakeWeatherRepository
 import com.example.weatherapp.core.data.repository.WeatherRepository
 import com.example.weatherapp.core.domain.error.GetWeatherError
 import com.example.weatherapp.core.domain.error.asUiText
-import com.example.weatherapp.core.domain.model.GeoLocation
-import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeUserLocation
+import com.example.weatherapp.location_list.presentation.fake.fakeUserLocation
 import com.example.weatherapp.weather.domain.use_cases.DeleteTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.MoveTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.ResetLayoutUseCase
 import com.example.weatherapp.weather.domain.use_cases.SaveLayoutInHistoryUseCase
-import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherTileData
+import com.example.weatherapp.weather.presentation.WeatherScreenEvent
+import com.example.weatherapp.weather.presentation.WeatherViewModel
+import com.example.weatherapp.weather.presentation.fake.fakeWeatherTileData
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Before
@@ -101,7 +101,9 @@ class WeatherViewModelTest {
         viewModel.onWeatherScreenEvent(WeatherScreenEvent.MoveTile(from = 0, to = 1))
         assertEquals(fakeWeatherTileData[1], viewModel.weatherState.value.weatherTileData[0])
         assertEquals(fakeWeatherTileData[0], viewModel.weatherState.value.weatherTileData[1])
-        assertEquals(fakeWeatherTileData.takeLast(fakeWeatherTileData.size - 2), viewModel.weatherState.value.weatherTileData.takeLast(fakeWeatherTileData.size - 2))
+        assertEquals(
+            fakeWeatherTileData.takeLast(fakeWeatherTileData.size - 2), viewModel.weatherState.value.weatherTileData.takeLast(
+                fakeWeatherTileData.size - 2))
     }
 
     @Test
@@ -114,7 +116,10 @@ class WeatherViewModelTest {
     fun weatherViewModel_ShuffleTiles_ShufflesTilesInTheList() = runTest {
         viewModel.onWeatherScreenEvent(WeatherScreenEvent.ShuffleTiles)
         assertEquals(fakeWeatherTileData.size, viewModel.weatherState.value.weatherTileData.size)
-        assertTrue(fakeWeatherTileData.containsAll(viewModel.weatherState.value.weatherTileData) && viewModel.weatherState.value.weatherTileData.containsAll(fakeWeatherTileData))
+        assertTrue(
+            fakeWeatherTileData.containsAll(viewModel.weatherState.value.weatherTileData) && viewModel.weatherState.value.weatherTileData.containsAll(
+                fakeWeatherTileData
+            ))
     }
 
     @Test

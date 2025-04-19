@@ -15,17 +15,19 @@ import androidx.navigation.toRoute
 import com.example.weatherapp.core.domain.model.GeoLocation
 import com.example.weatherapp.core.domain.model.GeoPoint
 import com.example.weatherapp.core.presentation.navigation.WeatherAppScreen
-import com.example.weatherapp.locations.presentation.location_search.LocationSearchScreen
-import com.example.weatherapp.locations.presentation.map.LocationMapScreen
-import com.example.weatherapp.locations.presentation.saved_locations.LocationsScreen
-import com.example.weatherapp.locations.presentation.saved_locations.LocationsScreenEvent
-import com.example.weatherapp.locations.presentation.saved_locations.LocationsViewModel
+import com.example.weatherapp.location_search.presentation.place_search.LocationSearchScreen
+import com.example.weatherapp.location_search.presentation.place_search.LocationSearchScreenEvent
+import com.example.weatherapp.location_search.presentation.place_search.LocationSearchViewModel
+import com.example.weatherapp.location_search.presentation.map.LocationMapScreen
+import com.example.weatherapp.location_list.presentation.LocationsScreen
+import com.example.weatherapp.location_list.presentation.LocationListScreenEvent
+import com.example.weatherapp.location_list.presentation.LocationListViewModel
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.example.weatherapp.weather.presentation.forecast.ForecastScreen
-import com.example.weatherapp.weather.presentation.forecast.ForecastViewModel
-import com.example.weatherapp.weather.presentation.weather.WeatherScreen
-import com.example.weatherapp.weather.presentation.weather.WeatherScreenEvent
-import com.example.weatherapp.weather.presentation.weather.WeatherViewModel
+import com.example.weatherapp.forecast.presentation.ForecastScreen
+import com.example.weatherapp.forecast.presentation.ForecastViewModel
+import com.example.weatherapp.weather.presentation.WeatherScreen
+import com.example.weatherapp.weather.presentation.WeatherScreenEvent
+import com.example.weatherapp.weather.presentation.WeatherViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.reflect.typeOf
@@ -81,25 +83,25 @@ fun WeatherApplication(
             )
         }
         composable<WeatherAppScreen.LocationsScreen> { backStackEntry ->
-            val locationsViewModel = koinViewModel<LocationsViewModel>()
-            val locationsState by locationsViewModel.locationsState.collectAsStateWithLifecycle()
+            val locationListViewModel = koinViewModel<LocationListViewModel>()
+            val locationsState by locationListViewModel.locationsState.collectAsStateWithLifecycle()
             val selectedMapLocationLatLng = backStackEntry.savedStateHandle.get<Pair<Double, Double>>("selected_location")
             val selectedMapLocation = if (selectedMapLocationLatLng != null) {
                 GeoPoint(selectedMapLocationLatLng.first, selectedMapLocationLatLng.second)
             } else null
             LocationsScreen(
-                locationsState = locationsState,
+                locationListState = locationsState,
                 selectedMapLocation = selectedMapLocation,
                 onLocationScreenEvent = {
                     when (it) {
-                        LocationsScreenEvent.NavigateToLocationMap -> navController.navigate(WeatherAppScreen.LocationMapScreen)
-                        LocationsScreenEvent.NavigateToLocationSearch -> navController.navigate(WeatherAppScreen.LocationSearchScreen)
-                        is LocationsScreenEvent.NavigateToWeatherScreen -> navController.navigate(WeatherAppScreen.WeatherScreen(it.location))
-                        LocationsScreenEvent.GoToAppSettings -> onGoToAppSettings()
-                        LocationsScreenEvent.ResetSavedMapLocation -> backStackEntry.savedStateHandle.remove<Pair<Double, Double>>("selected_location")
+                        LocationListScreenEvent.NavigateToLocationMap -> navController.navigate(WeatherAppScreen.LocationMapScreen)
+                        LocationListScreenEvent.NavigateToLocationSearch -> navController.navigate(WeatherAppScreen.LocationSearchScreen)
+                        is LocationListScreenEvent.NavigateToWeatherScreen -> navController.navigate(WeatherAppScreen.WeatherScreen(it.location))
+                        LocationListScreenEvent.GoToAppSettings -> onGoToAppSettings()
+                        LocationListScreenEvent.ResetSavedMapLocation -> backStackEntry.savedStateHandle.remove<Pair<Double, Double>>("selected_location")
                         else -> Unit
                     }
-                    locationsViewModel.onLocationsScreenEvent(it)
+                    locationListViewModel.onLocationsScreenEvent(it)
                 }
             )
         }
@@ -116,9 +118,18 @@ fun WeatherApplication(
             )
         }
         composable<WeatherAppScreen.LocationSearchScreen> {
+            val locationSearchViewModel = koinViewModel<LocationSearchViewModel>()
+            val locationSearchState by locationSearchViewModel.locationSearchState.collectAsStateWithLifecycle()
             LocationSearchScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
+                locationSearchState = locationSearchState,
+                onLocationSearchScreenEvent = { event ->
+                    when (event) {
+                        is LocationSearchScreenEvent.NavigateBack -> {
+                            navController.popBackStack()
+                        }
+                        else -> Unit
+                    }
+                    locationSearchViewModel.onLocationSearchScreenEvent(event)
                 }
             )
         }

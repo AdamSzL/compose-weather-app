@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.weatherapp.R
 import com.example.weatherapp.core.presentation.UiText
+import com.example.weatherapp.weather.presentation.utils.WeatherDirection
+import com.example.weatherapp.weather.presentation.utils.toUiText
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test

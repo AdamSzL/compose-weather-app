@@ -7,9 +7,8 @@ import com.example.weatherapp.core.domain.model.DailyForecast
 import com.example.weatherapp.core.domain.model.DetailedWeather
 import com.example.weatherapp.core.domain.model.GeoPoint
 import com.example.weatherapp.core.domain.model.HourlyForecast
-import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeLocations
-import com.example.weatherapp.weather.presentation.weather.fake.fakeBriefWeather
-import com.example.weatherapp.weather.presentation.weather.fake.fakeDetailedWeather
+import com.example.weatherapp.location_list.presentation.fake.fakeLocations
+import com.example.weatherapp.weather.presentation.fake.fakeDetailedWeather
 
 class FakeWeatherRepository(
     private val shouldReturnError: Boolean = false

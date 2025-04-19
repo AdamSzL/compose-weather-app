@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
-import com.example.weatherapp.locations.presentation.saved_locations.fake.fakeLocations
+import com.example.weatherapp.location_list.presentation.fake.fakeLocations
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
 @Composable

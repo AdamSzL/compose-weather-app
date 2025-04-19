@@ -1,5 +1,6 @@
 package com.example.weatherapp.weather.presentation.weather.utils
 
+import com.example.weatherapp.weather.presentation.utils.convertTimestampToHourMinute
 import kotlinx.datetime.TimeZone
 import org.junit.Assert.*
 

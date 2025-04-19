@@ -26,8 +26,8 @@ import com.example.weatherapp.R
 import com.example.weatherapp.core.presentation.utils.weatherIconUrl
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.example.weatherapp.weather.presentation.model.WeatherHeaderInfo
-import com.example.weatherapp.weather.presentation.weather.fake.fakeWeatherHeaderInfo
-import com.example.weatherapp.weather.presentation.weather.utils.capitalizeWords
+import com.example.weatherapp.weather.presentation.fake.fakeWeatherHeaderInfo
+import com.example.weatherapp.weather.presentation.utils.capitalizeWords
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable

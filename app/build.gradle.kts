@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.reorderable)
+    implementation(libs.google.places)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
