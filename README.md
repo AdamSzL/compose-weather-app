@@ -14,12 +14,12 @@ It supports multiple locations, interactive tile layout editing, and real-time w
 - Customizable tile layout: move, delete, shuffle, reset, save changes
 - Full dark mode support
 - Fake data fallback for development and UI previews
+- Search for location by name (e.g., city or place)
+- "My location" support (with location permissions)
 
 🚧 **In Progress / Planned:**
-- "My location" support (location permissions integration – not fully working yet)
-- Search for location by name (e.g., city or place)
 - Daily and hourly weather forecasts per location
-- Offline support via local weather data caching
+- Offline support via local weather data caching (already done for saved locations and current weather)
 
 ## 🔧 Tech Stack
 
