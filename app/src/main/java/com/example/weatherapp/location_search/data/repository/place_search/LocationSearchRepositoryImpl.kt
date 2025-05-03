@@ -1,18 +1,19 @@
 package com.example.weatherapp.location_search.data.repository.place_search
 
-import android.util.Log
 import com.example.weatherapp.core.domain.Result
+import com.example.weatherapp.core.domain.model.GeoPoint
+import com.example.weatherapp.location_search.domain.models.FetchLocationFromPlaceIdError
 import com.example.weatherapp.location_search.domain.models.LocationSearchError
 import com.example.weatherapp.location_search.domain.models.PlaceSuggestion
-import com.google.android.gms.common.api.ApiException
-import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.net.kotlin.awaitFetchPlace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import kotlinx.io.IOException
 
 class LocationSearchRepositoryImpl(
     private val placesClient: PlacesClient
@@ -45,6 +46,24 @@ class LocationSearchRepositoryImpl(
             Result.Success(suggestions)
         } catch (e: Exception) {
             Result.Error(LocationSearchError.UnknownError)
+        }
+    }
+
+    override suspend fun fetchLocationFromPlaceId(placeId: String): Result<GeoPoint, FetchLocationFromPlaceIdError> {
+        try {
+            val placeFields = listOf(Place.Field.LOCATION)
+            val response = placesClient.awaitFetchPlace(placeId, placeFields)
+            val latLng = response.place.location
+                ?: return Result.Error(FetchLocationFromPlaceIdError.NoLocationDataError)
+            val location = GeoPoint(
+                latitude = latLng.latitude,
+                longitude = latLng.longitude
+            )
+            return Result.Success(location)
+        } catch (e: IOException) {
+            return Result.Error(FetchLocationFromPlaceIdError.NetworkError)
+        } catch (e: Exception) {
+            return Result.Error(FetchLocationFromPlaceIdError.UnknownError)
         }
     }
 }

@@ -4,13 +4,14 @@ import android.Manifest
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
 import com.example.weatherapp.core.presentation.components.ConfirmAlertDialog
-import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -18,14 +19,13 @@ import com.google.accompanist.permissions.shouldShowRationale
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun RequestLocationPermission(
-    permissionAlreadyRequested: Boolean,
+fun LocationPermissionHandler(
+    wasPermissionAlreadyDenied: Boolean,
     onPermissionGranted: () -> Unit,
     onPermissionDenied: () -> Unit,
-    onSettingsDialogDismiss: () -> Unit,
-    onGoToAppSettings: () -> Unit,
-    modifier: Modifier = Modifier
+    onOpenAppSettings: () -> Unit,
 ) {
+    var shouldShowRationale by remember { mutableStateOf(true) }
     val locationPermissionState = rememberPermissionState(
         permission = Manifest.permission.ACCESS_FINE_LOCATION
     ) { result ->
@@ -33,48 +33,37 @@ fun RequestLocationPermission(
             onPermissionDenied()
         }
     }
-    val launchPermissionRequest = locationPermissionState::launchPermissionRequest
 
     when {
         locationPermissionState.status.isGranted -> {
             onPermissionGranted()
         }
-        !permissionAlreadyRequested && !locationPermissionState.status.shouldShowRationale -> {
-            SideEffect {
-                launchPermissionRequest()
+        locationPermissionState.status.shouldShowRationale -> {
+            if (shouldShowRationale) {
+                LocationPermissionRationaleDialog(
+                    onDialogDismiss = {
+                        onPermissionDenied()
+                    },
+                    onPermissionDialogLaunch = {
+                        shouldShowRationale = false
+                        locationPermissionState.launchPermissionRequest()
+                    }
+                )
             }
         }
-        locationPermissionState.status.shouldShowRationale -> {
-            LocationPermissionRationaleDialog(
-                onDialogDismiss = onPermissionDenied,
-                onPermissionDialogLaunch = {
-                    launchPermissionRequest()
-                }
-            )
-        }
-        else -> {
+        wasPermissionAlreadyDenied -> {
             ConfirmAlertDialog(
                 title = stringResource(R.string.location_permission_required),
                 text = stringResource(R.string.location_access_required_feature),
                 icon = Icons.Default.LocationOn,
-                onDismissRequest = onSettingsDialogDismiss,
-                onConfirmation = onGoToAppSettings
+                onDismissRequest = onPermissionDenied,
+                onConfirmation = onOpenAppSettings,
             )
+        }
+        else -> {
+            LaunchedEffect(Unit) {
+                locationPermissionState.launchPermissionRequest()
+            }
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-private fun RequestLocationPermissionPreview() {
-    WeatherAppTheme {
-        RequestLocationPermission(
-            permissionAlreadyRequested = true,
-            onSettingsDialogDismiss = {},
-            onGoToAppSettings = {},
-            onPermissionGranted = {},
-            onPermissionDenied = {},
-        )
-    }
-}
-

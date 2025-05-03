@@ -23,9 +23,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    WeatherApplication(
-                        onGoToAppSettings = ::openAppSettings,
-                    )
+                    WeatherApplication()
                 }
             }
         }

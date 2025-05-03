@@ -9,7 +9,7 @@ class WeatherRemoteDataSourceImpl(
     private val weatherApi: WeatherApi
 ): WeatherRemoteDataSource {
 
-    override suspend fun getWeather(
+    override suspend fun fetchWeather(
         location: GeoPoint,
         exclude: List<ExcludePart>
     ): WeatherResponseDto {

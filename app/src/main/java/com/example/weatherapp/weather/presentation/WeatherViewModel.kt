@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.core.data.repository.WeatherRepository
 import com.example.weatherapp.core.domain.Result
 import com.example.weatherapp.core.domain.error.asUiText
-import com.example.weatherapp.core.domain.model.GeoLocation
 import com.example.weatherapp.core.presentation.UiText
+import com.example.weatherapp.location_list.data.repository.saved_locations.SavedLocationsRepository
 import com.example.weatherapp.weather.domain.use_cases.DeleteTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.MoveTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.ResetLayoutUseCase
@@ -22,12 +22,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class WeatherViewModel(
-    private val location: GeoLocation,
+    private val locationId: Long,
     private val moveTilesUseCase: MoveTileUseCase,
     private val deleteTileUseCase: DeleteTileUseCase,
     private val saveLayoutInHistoryUseCase: SaveLayoutInHistoryUseCase,
     private val resetLayoutUseCase: ResetLayoutUseCase,
     private val weatherRepository: WeatherRepository,
+    private val savedLocationsRepository: SavedLocationsRepository,
 ): ViewModel() {
 
     private val _weatherState = MutableStateFlow(WeatherState())
@@ -68,8 +69,8 @@ class WeatherViewModel(
 
     private fun fetchCurrentWeatherInfo() {
         viewModelScope.launch {
-            val getDetailedWeatherResult = weatherRepository.getDetailedWeather(location.coordinates)
-            when (getDetailedWeatherResult) {
+            val location = savedLocationsRepository.getLocationById(locationId)
+            when (val getDetailedWeatherResult = weatherRepository.getDetailedWeather(location)) {
                 is Result.Success -> {
                     _weatherState.update {
                         it.copy(

@@ -1,19 +1,18 @@
 package com.example.weatherapp.core.presentation.navigation
 
-import com.example.weatherapp.core.domain.model.GeoLocation
 import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface WeatherAppScreen {
 
     @Serializable
-    data class WeatherScreen(val location: GeoLocation)
+    data class WeatherScreen(val locationId: Long)
 
     @Serializable
     data object ForecastScreen: WeatherAppScreen
 
     @Serializable
-    data object LocationsScreen: WeatherAppScreen
+    data object LocationListScreen: WeatherAppScreen
 
     @Serializable
     data object LocationMapScreen: WeatherAppScreen

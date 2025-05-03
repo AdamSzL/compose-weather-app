@@ -6,7 +6,8 @@ import com.example.weatherapp.core.data.repository.FakeWeatherRepository
 import com.example.weatherapp.core.data.repository.WeatherRepository
 import com.example.weatherapp.core.domain.error.GetWeatherError
 import com.example.weatherapp.core.domain.error.asUiText
-import com.example.weatherapp.location_list.presentation.fake.fakeUserLocation
+import com.example.weatherapp.core.fake.fakeUserLocation
+import com.example.weatherapp.location_list.data.repository.saved_locations.SavedLocationsRepository
 import com.example.weatherapp.weather.domain.use_cases.DeleteTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.MoveTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.ResetLayoutUseCase
@@ -29,6 +30,7 @@ class WeatherViewModelTest {
     private lateinit var saveLayoutInHistoryUseCase: SaveLayoutInHistoryUseCase
     private lateinit var resetLayoutUseCase: ResetLayoutUseCase
     private lateinit var weatherRepository: WeatherRepository
+    private lateinit var savedLocationsRepository: SavedLocationsRepository
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -40,7 +42,7 @@ class WeatherViewModelTest {
         saveLayoutInHistoryUseCase = SaveLayoutInHistoryUseCase()
         resetLayoutUseCase = ResetLayoutUseCase()
         weatherRepository = FakeWeatherRepository()
-        viewModel = WeatherViewModel(fakeUserLocation.location, moveTileUseCase, deleteTileUseCase, saveLayoutInHistoryUseCase, resetLayoutUseCase, weatherRepository)
+        viewModel = WeatherViewModel(fakeUserLocation.id, moveTileUseCase, deleteTileUseCase, saveLayoutInHistoryUseCase, resetLayoutUseCase, weatherRepository, savedLocationsRepository)
         viewModel.onWeatherScreenEvent(WeatherScreenEvent.ToggleAutoSave(false))
     }
 
@@ -246,7 +248,7 @@ class WeatherViewModelTest {
     @Test
     fun weatherViewModel_ErrorWhenFetchingCurrentWeatherInfo_ShowsErrorMessage() = runTest {
         weatherRepository = FakeWeatherRepository(shouldReturnError = true)
-        viewModel = WeatherViewModel(fakeUserLocation.location, moveTileUseCase, deleteTileUseCase, saveLayoutInHistoryUseCase, resetLayoutUseCase, weatherRepository)
+        viewModel = WeatherViewModel(fakeUserLocation.id, moveTileUseCase, deleteTileUseCase, saveLayoutInHistoryUseCase, resetLayoutUseCase, weatherRepository, savedLocationsRepository)
         assertEquals(
             (GetWeatherError.NetworkError.asUiText() as UiText.StringResource).resId,
             (viewModel.weatherState.value.message as UiText.StringResource).resId

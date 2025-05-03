@@ -12,8 +12,8 @@ enum class FetchUserLocationError: Error {
 
 fun FetchUserLocationError.asUiText(): UiText {
     return when (this) {
-        FetchUserLocationError.LocationFetchFailed -> UiText.DynamicString("Failed to fetch location")
+        FetchUserLocationError.LocationFetchFailed -> UiText.StringResource(R.string.failed_to_fetch_location)
         FetchUserLocationError.LocationPermissionNotGranted -> UiText.StringResource(R.string.location_permission_not_granted)
-        FetchUserLocationError.LocationServicesDisabled -> UiText.DynamicString("Location services disabled")
+        FetchUserLocationError.LocationServicesDisabled -> UiText.StringResource(R.string.location_services_disabled)
     }
 }

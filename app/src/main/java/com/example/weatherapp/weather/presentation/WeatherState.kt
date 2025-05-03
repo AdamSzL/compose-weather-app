@@ -1,10 +1,10 @@
 package com.example.weatherapp.weather.presentation
 
 import com.example.weatherapp.core.presentation.UiText
-import com.example.weatherapp.weather.presentation.model.WeatherHeaderInfo
-import com.example.weatherapp.weather.presentation.model.WeatherTileData
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherTileData
+import com.example.weatherapp.weather.presentation.model.WeatherHeaderInfo
+import com.example.weatherapp.weather.presentation.model.WeatherTileData
 
 data class WeatherState(
     val weatherHeaderInfo: WeatherHeaderInfo? = fakeWeatherHeaderInfo,

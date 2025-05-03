@@ -2,8 +2,8 @@ package com.example.weatherapp.location_search.data.repository.user_location
 
 import com.example.weatherapp.core.domain.Result
 import com.example.weatherapp.core.domain.model.GeoPoint
+import com.example.weatherapp.core.fake.fakeUserLocation
 import com.example.weatherapp.location_search.domain.models.FetchUserLocationError
-import com.example.weatherapp.location_list.presentation.fake.fakeUserLocation
 
 class FakeUserLocationRepository(
     private val shouldReturnError: Boolean = false
@@ -13,7 +13,7 @@ class FakeUserLocationRepository(
         return if (shouldReturnError) {
             Result.Error(FetchUserLocationError.LocationPermissionNotGranted)
         } else {
-            Result.Success(fakeUserLocation.location.coordinates)
+            Result.Success(fakeUserLocation.coordinates)
         }
     }
 }

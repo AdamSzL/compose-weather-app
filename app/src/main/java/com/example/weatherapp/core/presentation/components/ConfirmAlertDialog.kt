@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
-import com.example.weatherapp.location_list.presentation.fake.fakeLocations
+import com.example.weatherapp.core.fake.fakeLocations
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
 @Composable
@@ -70,7 +70,7 @@ private fun ConfirmAlertDialogPreview() {
     WeatherAppTheme {
         ConfirmAlertDialog(
             title = stringResource(R.string.delete_location),
-            text = stringResource(R.string.delete_location_confirmation, fakeLocations.first().location.address.name),
+            text = stringResource(R.string.delete_location_confirmation, fakeLocations.first().address.name),
             icon = Icons.Default.Delete,
             onDismissRequest = {},
             onConfirmation = {}

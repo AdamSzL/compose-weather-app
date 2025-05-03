@@ -1,5 +1,6 @@
 package com.example.weatherapp.location_list.presentation
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -16,69 +17,87 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.R
-import com.example.weatherapp.core.domain.model.GeoPoint
-import com.example.weatherapp.core.presentation.UiText
+import com.example.weatherapp.core.domain.consume
+import com.example.weatherapp.core.fake.fakeLocationWeatherBriefs
 import com.example.weatherapp.location_list.presentation.components.AddLocationFloatingActionButton
 import com.example.weatherapp.location_list.presentation.components.WeatherBriefList
-import com.example.weatherapp.location_list.presentation.fake.fakeLocations
-import com.example.weatherapp.location_search.presentation.user_location.RequestLocationPermission
+import com.example.weatherapp.location_search.presentation.user_location.LocationPermissionHandler
+import com.example.weatherapp.openAppSettings
 import com.example.weatherapp.ui.theme.WeatherAppTheme
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun LocationListRoot(
+    onNavigateToMapScreen: () -> Unit,
+    onNavigateToSearchScreen: () -> Unit,
+    onNavigateToWeatherScreen: (Long) -> Unit,
+    locationListViewModel: LocationListViewModel = koinViewModel<LocationListViewModel>(),
+) {
+    val context = LocalContext.current
+    val locationListState by locationListViewModel.locationsState.collectAsStateWithLifecycle()
+
+    LocationListScreen(
+        locationListState = locationListState,
+        onLocationScreenEvent = {
+            when (it) {
+                LocationListScreenEvent.NavigateToLocationMap -> onNavigateToMapScreen()
+                LocationListScreenEvent.NavigateToLocationSearch -> onNavigateToSearchScreen()
+                is LocationListScreenEvent.NavigateToWeatherScreen -> onNavigateToWeatherScreen(it.location.id)
+                LocationListScreenEvent.GoToAppSettings -> (context as Activity).openAppSettings()
+                else -> Unit
+            }
+            locationListViewModel.onLocationsScreenEvent(it)
+        }
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LocationsScreen(
+fun LocationListScreen(
     locationListState: LocationListState,
-    selectedMapLocation: GeoPoint?,
     onLocationScreenEvent: (LocationListScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var locationPermissionAlreadyRequested by remember { mutableStateOf(false) }
-    var isPermissionDialogVisible by remember { mutableStateOf(false) }
+    var isPermissionDialogVisible by rememberSaveable { mutableStateOf(false) }
     var isFabExpanded by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    LaunchedEffect(locationListState.message) {
-        locationListState.message?.let { text ->
-            snackbarHostState.showSnackbar(text.asString(context))
-            onLocationScreenEvent(LocationListScreenEvent.ResetMessage)
+    locationListState.showMessageEvent?.let {
+        LaunchedEffect(it) {
+            snackbarHostState.showSnackbar(it.data.asString(context))
+            it.consume()
         }
     }
 
-    LaunchedEffect(selectedMapLocation) {
-        selectedMapLocation?.let {
-            onLocationScreenEvent(LocationListScreenEvent.AddMapLocation(it))
-            onLocationScreenEvent(LocationListScreenEvent.ResetSavedMapLocation)
-        }
+    val hidePermissionDialog = {
+        isPermissionDialogVisible = false
     }
 
     if (isPermissionDialogVisible) {
-        RequestLocationPermission(
-            permissionAlreadyRequested = locationPermissionAlreadyRequested,
-            onSettingsDialogDismiss = {
-                onLocationScreenEvent(LocationListScreenEvent.ShowSnackbar(UiText.StringResource(R.string.location_access_disabled_enable_in_settings)))
-                isPermissionDialogVisible = false
-            },
-            onGoToAppSettings = {
-                onLocationScreenEvent(LocationListScreenEvent.GoToAppSettings)
-            },
+        LocationPermissionHandler(
+            wasPermissionAlreadyDenied = locationListState.wasLocationPermissionAlreadyDenied,
             onPermissionGranted = {
-                locationPermissionAlreadyRequested = true
-                isPermissionDialogVisible = false
                 onLocationScreenEvent(LocationListScreenEvent.FetchUserLocation)
+                hidePermissionDialog()
             },
             onPermissionDenied = {
-                onLocationScreenEvent(LocationListScreenEvent.ShowSnackbar(UiText.StringResource(R.string.location_permission_required_for_this_feature)))
-                locationPermissionAlreadyRequested = true
-                isPermissionDialogVisible = false
+                onLocationScreenEvent(LocationListScreenEvent.LocationPermissionWasDenied)
+                hidePermissionDialog()
             },
+            onOpenAppSettings = {
+                onLocationScreenEvent(LocationListScreenEvent.GoToAppSettings)
+                hidePermissionDialog()
+            }
         )
     }
 
@@ -121,12 +140,16 @@ fun LocationsScreen(
                 .padding(innerPadding)
         ) {
             WeatherBriefList(
-                locations = locationListState.locations,
+                locations = locationListState.locationsWithWeatherBrief,
+                isRefreshingWeatherBriefs = locationListState.isRefreshingWeatherBriefs,
                 onNavigateToWeatherScreen = {
                     onLocationScreenEvent(LocationListScreenEvent.NavigateToWeatherScreen(it))
                 },
                 onLocationDelete = {
                     onLocationScreenEvent(LocationListScreenEvent.DeleteLocation(it))
+                },
+                onWeatherBriefRefresh = {
+                    onLocationScreenEvent(LocationListScreenEvent.RefreshSavedLocationsWeatherBrief)
                 },
                 modifier = Modifier.fillMaxSize()
             )
@@ -147,11 +170,10 @@ fun LocationsScreen(
 @Composable
 private fun LocationsScreenPreview() {
     WeatherAppTheme {
-        LocationsScreen(
+        LocationListScreen(
             locationListState = LocationListState(
-                locations = fakeLocations
+                locationsWithWeatherBrief = fakeLocationWeatherBriefs
             ),
-            selectedMapLocation = null,
             onLocationScreenEvent = {}
         )
     }

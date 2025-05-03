@@ -3,45 +3,57 @@ package com.example.weatherapp.location_search.presentation.place_search
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.R
+import com.example.weatherapp.core.domain.consume
 import com.example.weatherapp.location_search.presentation.place_search.components.PlaceSearchTextField
 import com.example.weatherapp.location_search.presentation.place_search.components.PlaceSuggestionList
 import com.example.weatherapp.location_search.presentation.place_search.fake.fakePlaceSuggestions
 import com.example.weatherapp.ui.theme.WeatherAppTheme
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun LocationSearchRoot(
+    onNavigateBack: () -> Unit,
+    locationSearchViewModel: LocationSearchViewModel = koinViewModel<LocationSearchViewModel>(),
+) {
+    val locationSearchState by locationSearchViewModel.locationSearchState.collectAsStateWithLifecycle()
+
+    LocationSearchScreen(
+        locationSearchState = locationSearchState,
+        onLocationSearchScreenEvent = { event ->
+            when (event) {
+                is LocationSearchScreenEvent.NavigateBack -> onNavigateBack()
+                else -> Unit
+            }
+            locationSearchViewModel.onLocationSearchScreenEvent(event)
+        }
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +66,23 @@ fun LocationSearchScreen(
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+    val navigateBack = { onLocationSearchScreenEvent(LocationSearchScreenEvent.NavigateBack) }
+
+    locationSearchState.navigateBackEvent?.let {
+        LaunchedEffect(it) {
+            navigateBack()
+            it.consume()
+        }
+    }
+
+    locationSearchState.showMessageEvent?.let {
+        LaunchedEffect(it) {
+            snackbarHostState.showSnackbar(it.data.asString(context))
+            it.consume()
+        }
+    }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -67,10 +96,9 @@ fun LocationSearchScreen(
                 ),
                 title = {
                     PlaceSearchTextField(
-                        locationSearchState.locationSearchQuery,
-                        onLeadingIconClick = {
-                            onLocationSearchScreenEvent(LocationSearchScreenEvent.NavigateBack)
-                        },
+                        value = locationSearchState.locationSearchQuery,
+                        enabled = locationSearchState.currentlySavingPlaceId == null,
+                        onLeadingIconClick = navigateBack,
                         onSearchClick = {
                             keyboardController?.hide()
                             focusManager.clearFocus()
@@ -105,6 +133,12 @@ fun LocationSearchScreen(
             } else {
                 PlaceSuggestionList(
                     placeSuggestions = locationSearchState.placeSuggestions,
+                    currentlySavingPlaceId = locationSearchState.currentlySavingPlaceId,
+                    onPlaceSuggestionClicked = {
+                        onLocationSearchScreenEvent(
+                            LocationSearchScreenEvent.PlaceSelected(it)
+                        )
+                    }
                 )
             }
         }

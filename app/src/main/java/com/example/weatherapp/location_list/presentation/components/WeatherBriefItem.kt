@@ -49,10 +49,10 @@ import coil3.compose.LocalAsyncImagePreviewHandler
 import com.example.weatherapp.R
 import com.example.weatherapp.core.domain.model.GeoLocation
 import com.example.weatherapp.core.domain.model.formattedAddress
+import com.example.weatherapp.core.fake.fakeLocationWeatherBriefs
 import com.example.weatherapp.core.presentation.components.ConfirmAlertDialog
 import com.example.weatherapp.core.presentation.utils.weatherIconUrl
 import com.example.weatherapp.location_list.domain.models.LocationWeatherBrief
-import com.example.weatherapp.location_list.presentation.fake.fakeLocations
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.example.weatherapp.weather.presentation.utils.capitalizeWords
 
@@ -217,7 +217,7 @@ fun WeatherBriefItem(
 private fun SavedLocationItemPreview() {
     WeatherAppTheme {
         WeatherBriefItem(
-            locationWeatherBrief = fakeLocations.first(),
+            locationWeatherBrief = fakeLocationWeatherBriefs.first(),
             onNavigateToWeatherScreen = {},
             onDelete = {}
         )

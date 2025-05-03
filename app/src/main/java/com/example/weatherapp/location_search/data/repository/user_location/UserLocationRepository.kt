@@ -5,5 +5,5 @@ import com.example.weatherapp.core.domain.model.GeoPoint
 import com.example.weatherapp.location_search.domain.models.FetchUserLocationError
 
 interface UserLocationRepository {
-    suspend fun getUserLocation():Result<GeoPoint, FetchUserLocationError>
+    suspend fun getUserLocation(): Result<GeoPoint, FetchUserLocationError>
 }

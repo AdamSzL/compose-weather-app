@@ -5,4 +5,6 @@ sealed interface LocationSearchScreenEvent {
     data object NavigateBack: LocationSearchScreenEvent
 
     data class LocationSearchQueryChanged(val query: String): LocationSearchScreenEvent
+
+    data class PlaceSelected(val placeId: String): LocationSearchScreenEvent
 }

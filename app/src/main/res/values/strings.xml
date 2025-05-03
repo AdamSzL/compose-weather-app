@@ -98,4 +98,8 @@
     <string name="uvi_risk_very_high">Very high</string>
     <string name="uvi_risk_extreme">Extreme</string>
     <string name="search_for_city_or_place">Search for city or place</string>
+    <string name="failed_to_fetch_address">Failed to fetch location address</string>
+    <string name="failed_to_fetch_location">Failed to fetch location. Please try again.</string>
+    <string name="location_services_disabled">Location services are disabled. Please enable GPS.</string>
+    <string name="no_location_data_error">Cannot retrieve location for the selected place.</string>
 </resources>

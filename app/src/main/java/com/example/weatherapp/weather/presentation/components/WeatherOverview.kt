@@ -19,10 +19,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.example.weatherapp.weather.presentation.model.WeatherHeaderInfo
-import com.example.weatherapp.weather.presentation.model.WeatherTileData
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherTileData
+import com.example.weatherapp.weather.presentation.model.WeatherHeaderInfo
+import com.example.weatherapp.weather.presentation.model.WeatherTileData
 import com.example.weatherapp.weather.presentation.utils.shake
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyGridState

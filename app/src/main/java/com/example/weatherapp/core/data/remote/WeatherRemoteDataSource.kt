@@ -6,5 +6,5 @@ import com.example.weatherapp.core.domain.model.GeoPoint
 
 interface WeatherRemoteDataSource {
 
-    suspend fun getWeather(location: GeoPoint, exclude: List<ExcludePart>): WeatherResponseDto
+    suspend fun fetchWeather(location: GeoPoint, exclude: List<ExcludePart>): WeatherResponseDto
 }

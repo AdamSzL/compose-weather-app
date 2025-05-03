@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.secrets.gradle)
+    alias(libs.plugins.ksp)
 }
 
 secrets {
@@ -73,8 +74,13 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.reorderable)
     implementation(libs.google.places)
+    implementation(libs.room.ktx)
+    implementation(libs.room.runtime)
+    implementation(libs.datastore.preferences)
+    ksp(libs.room.compiler)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.room.testing)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

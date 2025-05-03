@@ -3,7 +3,6 @@ package com.example.weatherapp.location_search.presentation.place_search.compone
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.InputTransformation.Companion.keyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -14,20 +13,17 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
-import com.example.weatherapp.location_search.presentation.place_search.LocationSearchScreenEvent
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
 @Composable
 fun PlaceSearchTextField(
     value: String,
+    enabled: Boolean,
     onValueChange: (String) -> Unit,
     onLeadingIconClick: () -> Unit,
     onSearchClick: () -> Unit,
@@ -36,10 +32,13 @@ fun PlaceSearchTextField(
     val textFieldColors = TextFieldDefaults.colors(
         unfocusedContainerColor = Color.Transparent,
         focusedContainerColor = Color.Transparent,
+        disabledContainerColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,
+        disabledIndicatorColor = Color.Transparent,
         unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
         focusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 
     TextField(
@@ -61,6 +60,7 @@ fun PlaceSearchTextField(
         textStyle = MaterialTheme.typography.bodyLarge,
         colors = textFieldColors,
         value = value,
+        enabled = enabled,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Search,
         ),
@@ -81,6 +81,7 @@ private fun PlaceSearchTextFieldPreview() {
     WeatherAppTheme {
         PlaceSearchTextField(
             value = "Krakow",
+            enabled = true,
             onValueChange = {},
             onLeadingIconClick = {},
             onSearchClick = {}

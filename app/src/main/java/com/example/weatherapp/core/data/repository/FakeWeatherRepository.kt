@@ -3,26 +3,24 @@ package com.example.weatherapp.core.data.repository
 import com.example.weatherapp.core.domain.Result
 import com.example.weatherapp.core.domain.error.GetWeatherError
 import com.example.weatherapp.core.domain.model.BriefWeather
-import com.example.weatherapp.core.domain.model.DailyForecast
 import com.example.weatherapp.core.domain.model.DetailedWeather
-import com.example.weatherapp.core.domain.model.GeoPoint
-import com.example.weatherapp.core.domain.model.HourlyForecast
-import com.example.weatherapp.location_list.presentation.fake.fakeLocations
+import com.example.weatherapp.core.domain.model.GeoLocation
+import com.example.weatherapp.core.fake.fakeLocationWeatherBriefs
 import com.example.weatherapp.weather.presentation.fake.fakeDetailedWeather
 
 class FakeWeatherRepository(
     private val shouldReturnError: Boolean = false
 ): WeatherRepository {
 
-    override suspend fun getBriefWeather(location: GeoPoint): Result<BriefWeather, GetWeatherError> {
+    override suspend fun getBriefWeather(location: GeoLocation): Result<BriefWeather, GetWeatherError> {
         return if (shouldReturnError) {
             Result.Error(GetWeatherError.NetworkError)
         } else {
-            Result.Success(fakeLocations.find { it.location.coordinates == location }!!.weatherBrief!!)
+            Result.Success(fakeLocationWeatherBriefs.find { it.location.coordinates == location.coordinates }!!.weatherBrief!!)
         }
     }
 
-    override suspend fun getDetailedWeather(location: GeoPoint): Result<DetailedWeather, GetWeatherError> {
+    override suspend fun getDetailedWeather(location: GeoLocation): Result<DetailedWeather, GetWeatherError> {
         return if (shouldReturnError) {
             Result.Error(GetWeatherError.NetworkError)
         } else {
@@ -30,19 +28,35 @@ class FakeWeatherRepository(
         }
     }
 
-    override suspend fun getDailyForecast(location: GeoPoint): Result<List<DailyForecast>, GetWeatherError> {
+    override suspend fun refreshCurrentWeather(location: GeoLocation): Result<Unit, GetWeatherError> {
         return if (shouldReturnError) {
             Result.Error(GetWeatherError.NetworkError)
         } else {
-            Result.Success(emptyList())
+            Result.Success(Unit)
         }
     }
 
-    override suspend fun getHourlyForecast(location: GeoPoint): Result<List<HourlyForecast>, GetWeatherError> {
+    override suspend fun refreshCurrentWeatherIfRefreshable(location: GeoLocation): Result<Unit, GetWeatherError> {
         return if (shouldReturnError) {
-            Result.Error(GetWeatherError.NetworkError)
+            Result.Error(GetWeatherError.UnknownError)
         } else {
-            Result.Success(emptyList())
+            Result.Success(Unit)
         }
     }
+
+//    override suspend fun getDailyForecast(location: GeoPoint): Result<List<DailyForecast>, GetWeatherError> {
+//        return if (shouldReturnError) {
+//            Result.Error(GetWeatherError.NetworkError)
+//        } else {
+//            Result.Success(emptyList())
+//        }
+//    }
+//
+//    override suspend fun getHourlyForecast(location: GeoPoint): Result<List<HourlyForecast>, GetWeatherError> {
+//        return if (shouldReturnError) {
+//            Result.Error(GetWeatherError.NetworkError)
+//        } else {
+//            Result.Success(emptyList())
+//        }
+//    }
 }

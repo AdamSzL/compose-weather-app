@@ -29,16 +29,43 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.R
 import com.example.weatherapp.core.domain.model.GeoLocation
 import com.example.weatherapp.core.domain.model.formattedAddress
-import com.example.weatherapp.location_list.presentation.fake.fakeLocations
+import com.example.weatherapp.core.fake.fakeLocations
+import com.example.weatherapp.core.fake.fakeUserLocation
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.example.weatherapp.weather.presentation.components.EditModeFloatingActionButton
 import com.example.weatherapp.weather.presentation.components.EditModeTopAppBar
 import com.example.weatherapp.weather.presentation.components.WeatherOverview
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherTileData
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+@Composable
+fun WeatherRoot(
+    locationId: Long,
+    onNavigateBack: () -> Unit,
+    weatherViewModel: WeatherViewModel = koinViewModel<WeatherViewModel>(
+        parameters = { parametersOf(locationId) }
+    ),
+) {
+    val weatherState by weatherViewModel.weatherState.collectAsStateWithLifecycle()
+
+    WeatherScreen(
+        location = fakeUserLocation,
+        weatherState = weatherState,
+        onWeatherScreenEvent = {
+            when (it) {
+                is WeatherScreenEvent.NavigateBack -> onNavigateBack()
+                else -> Unit
+            }
+            weatherViewModel.onWeatherScreenEvent(it)
+        }
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -164,7 +191,7 @@ private fun WeatherScreenPreview(
 ) {
     WeatherAppTheme {
         WeatherScreen(
-            location = fakeLocations.first().location,
+            location = fakeLocations.first(),
             weatherState = WeatherState(
                 weatherHeaderInfo = fakeWeatherHeaderInfo,
                 weatherTileData = fakeWeatherTileData,
