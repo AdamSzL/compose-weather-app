@@ -1,22 +1,28 @@
 package com.example.weatherapp.location_search.presentation.map
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -24,8 +30,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.R
 import com.example.weatherapp.core.domain.consume
-import com.example.weatherapp.location_search.presentation.map.components.LocationMapControls
-import com.example.weatherapp.location_search.presentation.map.components.LocationMapTopAppBar
 import com.example.weatherapp.location_search.presentation.map.utils.toGeoPoint
 import com.example.weatherapp.location_search.presentation.map.utils.toLatLng
 import com.example.weatherapp.ui.theme.WeatherAppTheme
@@ -52,6 +56,7 @@ fun LocationMapRoot(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LocationMapScreen(
     locationMapState: LocationMapState,
@@ -84,11 +89,6 @@ fun LocationMapScreen(
     }
 
     Scaffold(
-        topBar = {
-            LocationMapTopAppBar(
-                onNavigateBack = navigateBack,
-            )
-        },
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
@@ -110,23 +110,56 @@ fun LocationMapScreen(
                     )
                 }
             }
-            LocationMapControls(
-                isCancelEnabled = !locationMapState.isSavingLocation,
-                isSaveEnabled = locationMapState.selectedLocation != null && !locationMapState.isSavingLocation,
-                onCancel = navigateBack,
-                onSave = {
+            FilledTonalIconButton(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(start = dimensionResource(R.dimen.padding_big)),
+                onClick = navigateBack
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.navigate_back)
+                )
+            }
+            FilledIconButton(
+                onClick = {
                     onLocationMapScreenEvent(LocationMapScreenEvent.SaveSelectedLocation)
                 },
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = dimensionResource(R.dimen.size_medium))
-                    .clip(RoundedCornerShape(dimensionResource(R.dimen.size_small)))
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
-                    .padding(
-                        horizontal = dimensionResource(R.dimen.padding_medium),
-                        vertical = dimensionResource(R.dimen.padding_small)
-                    )
-            )
+                modifier =
+                    Modifier
+                        .align(BottomCenter)
+                        .padding(bottom = dimensionResource(R.dimen.padding_large))
+                        .size(
+                            IconButtonDefaults.largeContainerSize(
+                                IconButtonDefaults.IconButtonWidthOption.Uniform
+                            )
+                        ),
+                shape = IconButtonDefaults.largeRoundShape,
+                enabled = locationMapState.selectedLocation != null && !locationMapState.isSavingLocation,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = "Localized description",
+                    modifier = Modifier.size(IconButtonDefaults.largeIconSize),
+                )
+            }
+//            LocationMapControls(
+//                isCancelEnabled = !locationMapState.isSavingLocation,
+//                isSaveEnabled = locationMapState.selectedLocation != null && !locationMapState.isSavingLocation,
+//                onCancel = navigateBack,
+//                onSave = {
+//                    onLocationMapScreenEvent(LocationMapScreenEvent.SaveSelectedLocation)
+//                },
+//                modifier = Modifier
+//                    .align(Alignment.BottomCenter)
+//                    .padding(bottom = dimensionResource(R.dimen.size_medium))
+//                    .clip(RoundedCornerShape(dimensionResource(R.dimen.size_small)))
+//                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
+//                    .padding(
+//                        horizontal = dimensionResource(R.dimen.padding_medium),
+//                        vertical = dimensionResource(R.dimen.padding_small)
+//                    )
+//            )
         }
     }
 }

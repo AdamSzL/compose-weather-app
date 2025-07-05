@@ -102,4 +102,10 @@
     <string name="failed_to_fetch_location">Failed to fetch location. Please try again.</string>
     <string name="location_services_disabled">Location services are disabled. Please enable GPS.</string>
     <string name="no_location_data_error">Cannot retrieve location for the selected place.</string>
+    <string name="all_locations_up_to_date">All locations are up to date.</string>
+    <string name="weather_updated">Weather updated for some locations.</string>
+    <string name="failed_to_refresh_weather">Failed to refresh weather data.</string>
+    <string name="toggle_add_location_menu">Toggle add location menu</string>
+    <string name="expanded">Expanded</string>
+    <string name="collapsed">Collapsed</string>
 </resources>

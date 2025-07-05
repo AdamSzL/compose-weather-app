@@ -27,7 +27,7 @@ fun LocationPermissionHandler(
 ) {
     var shouldShowRationale by remember { mutableStateOf(true) }
     val locationPermissionState = rememberPermissionState(
-        permission = Manifest.permission.ACCESS_FINE_LOCATION
+        permission = Manifest.permission.ACCESS_COARSE_LOCATION
     ) { result ->
         if (!result) {
             onPermissionDenied()

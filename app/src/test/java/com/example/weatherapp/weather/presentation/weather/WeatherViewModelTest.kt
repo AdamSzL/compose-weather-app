@@ -10,7 +10,6 @@ import com.example.weatherapp.core.fake.fakeUserLocation
 import com.example.weatherapp.location_list.data.repository.saved_locations.SavedLocationsRepository
 import com.example.weatherapp.weather.domain.use_cases.DeleteTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.MoveTileUseCase
-import com.example.weatherapp.weather.domain.use_cases.ResetLayoutUseCase
 import com.example.weatherapp.weather.domain.use_cases.SaveLayoutInHistoryUseCase
 import com.example.weatherapp.weather.presentation.WeatherScreenEvent
 import com.example.weatherapp.weather.presentation.WeatherViewModel
@@ -28,7 +27,6 @@ class WeatherViewModelTest {
     private lateinit var moveTileUseCase: MoveTileUseCase
     private lateinit var deleteTileUseCase: DeleteTileUseCase
     private lateinit var saveLayoutInHistoryUseCase: SaveLayoutInHistoryUseCase
-    private lateinit var resetLayoutUseCase: ResetLayoutUseCase
     private lateinit var weatherRepository: WeatherRepository
     private lateinit var savedLocationsRepository: SavedLocationsRepository
 
@@ -40,25 +38,14 @@ class WeatherViewModelTest {
         moveTileUseCase = MoveTileUseCase()
         deleteTileUseCase = DeleteTileUseCase()
         saveLayoutInHistoryUseCase = SaveLayoutInHistoryUseCase()
-        resetLayoutUseCase = ResetLayoutUseCase()
         weatherRepository = FakeWeatherRepository()
-        viewModel = WeatherViewModel(fakeUserLocation.id, moveTileUseCase, deleteTileUseCase, saveLayoutInHistoryUseCase, resetLayoutUseCase, weatherRepository, savedLocationsRepository)
-        viewModel.onWeatherScreenEvent(WeatherScreenEvent.ToggleAutoSave(false))
+        viewModel = WeatherViewModel(fakeUserLocation.id, moveTileUseCase, deleteTileUseCase, saveLayoutInHistoryUseCase, weatherRepository, savedLocationsRepository)
     }
 
     @Test
     fun weatherViewModel_SetTileData_UpdatesTileDataState() = runTest {
         assertEquals(fakeWeatherTileData.size, viewModel.weatherState.value.weatherTileData.size)
         assertEquals(fakeWeatherTileData, viewModel.weatherState.value.weatherTileData)
-    }
-
-    @Test
-    fun weatherViewModel_ToggleAutoSave_UpdatesAutoSaveState() {
-        viewModel.onWeatherScreenEvent(WeatherScreenEvent.ToggleAutoSave(true))
-        assertTrue(viewModel.weatherState.value.isAutoSaveEnabled)
-
-        viewModel.onWeatherScreenEvent(WeatherScreenEvent.ToggleAutoSave(false))
-        assertFalse(viewModel.weatherState.value.isAutoSaveEnabled)
     }
 
     @Test
@@ -203,23 +190,10 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun weatherViewModel_ResetLayoutWhenCurrentLayoutIsLatest_CorrectlyUpdatesState() = runTest {
-        val layoutBefore = viewModel.weatherState.value.weatherTileData
-        repeat(5) {
-            viewModel.onWeatherScreenEvent(WeatherScreenEvent.ShuffleTiles)
-        }
-        assertEquals(6, viewModel.weatherState.value.weatherTileDataHistory.size)
-        viewModel.onWeatherScreenEvent(WeatherScreenEvent.ResetLayout)
-        assertEquals(7, viewModel.weatherState.value.weatherTileDataHistory.size)
-        assertEquals(6, viewModel.weatherState.value.currentWeatherTileDataIndex)
-        assertEquals(layoutBefore, viewModel.weatherState.value.weatherTileData)
-    }
-
-    @Test
     fun weatherViewModel_SaveCurrentLayout_SavesLayoutOnDevice() = runTest {
         viewModel.onWeatherScreenEvent(WeatherScreenEvent.SaveLayout)
         assertTrue(viewModel.weatherState.value.isSavingLayout)
-        delay(2000L) // Remove in the future
+        delay(1000L) // Remove in the future
         assertFalse(viewModel.weatherState.value.isSavingLayout)
     }
 
@@ -229,26 +203,15 @@ class WeatherViewModelTest {
         assertTrue(viewModel.weatherState.value.isEditModeEnabled)
         viewModel.onWeatherScreenEvent(WeatherScreenEvent.SaveLayoutAndExitEditMode)
         assertTrue(viewModel.weatherState.value.isSavingLayout)
-        delay(2000L)
+        delay(1000L)
         assertFalse(viewModel.weatherState.value.isSavingLayout)
         assertFalse(viewModel.weatherState.value.isEditModeEnabled)
     }
 
     @Test
-    fun weatherViewModel_UpdateLayoutWhenAutoSaveEnabled_SavesLayoutOnDevice() = runTest {
-        viewModel.onWeatherScreenEvent(WeatherScreenEvent.ToggleAutoSave(true))
-        assertTrue(viewModel.weatherState.value.isAutoSaveEnabled)
-        viewModel.onWeatherScreenEvent(WeatherScreenEvent.ShuffleTiles)
-        delay(2000L)
-        assertTrue(viewModel.weatherState.value.isSavingLayout)
-        delay(2000L)
-        assertFalse(viewModel.weatherState.value.isSavingLayout)
-    }
-
-    @Test
     fun weatherViewModel_ErrorWhenFetchingCurrentWeatherInfo_ShowsErrorMessage() = runTest {
         weatherRepository = FakeWeatherRepository(shouldReturnError = true)
-        viewModel = WeatherViewModel(fakeUserLocation.id, moveTileUseCase, deleteTileUseCase, saveLayoutInHistoryUseCase, resetLayoutUseCase, weatherRepository, savedLocationsRepository)
+        viewModel = WeatherViewModel(fakeUserLocation.id, moveTileUseCase, deleteTileUseCase, saveLayoutInHistoryUseCase, weatherRepository, savedLocationsRepository)
         assertEquals(
             (GetWeatherError.NetworkError.asUiText() as UiText.StringResource).resId,
             (viewModel.weatherState.value.message as UiText.StringResource).resId

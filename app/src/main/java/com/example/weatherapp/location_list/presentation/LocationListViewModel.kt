@@ -3,11 +3,12 @@ package com.example.weatherapp.location_list.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.R
-import com.example.weatherapp.core.data.repository.WeatherRepository
 import com.example.weatherapp.core.domain.Result
 import com.example.weatherapp.core.domain.asUiEvent
 import com.example.weatherapp.core.presentation.UiText
 import com.example.weatherapp.location_list.data.repository.saved_locations.SavedLocationsRepository
+import com.example.weatherapp.location_list.di.RefreshSavedLocationsWeatherBriefUseCase
+import com.example.weatherapp.location_list.domain.models.asUiText
 import com.example.weatherapp.location_list.domain.use_cases.FetchLocationWeatherBriefUseCase
 import com.example.weatherapp.location_search.data.repository.location_permission.LocationPermissionRepository
 import com.example.weatherapp.location_search.data.repository.user_location.UserLocationRepository
@@ -23,8 +24,8 @@ class LocationListViewModel(
     private val userLocationRepository: UserLocationRepository,
     private val fetchLocationWeatherBriefUseCase: FetchLocationWeatherBriefUseCase,
     private val saveLocationUseCase: SaveLocationUseCase,
+    private val refreshSavedLocationsWeatherBriefUseCase: RefreshSavedLocationsWeatherBriefUseCase,
     private val savedLocationsRepository: SavedLocationsRepository,
-    private val weatherRepository: WeatherRepository,
     private val locationPermissionRepository: LocationPermissionRepository,
 ): ViewModel() {
 
@@ -80,10 +81,10 @@ class LocationListViewModel(
             it.copy(isRefreshingWeatherBriefs = true)
         }
         viewModelScope.launch {
-            _locationListState.value.locationsWithWeatherBrief.forEach { locationWeatherBrief ->
-                weatherRepository.refreshCurrentWeatherIfRefreshable(locationWeatherBrief.location)
-            }
-            delay(50)
+            val savedLocations = _locationListState.value.locationsWithWeatherBrief.map { it.location }
+            val refreshWeatherResult = refreshSavedLocationsWeatherBriefUseCase(savedLocations)
+            showMessage(refreshWeatherResult.asUiText())
+            delay(500)
             _locationListState.update {
                 it.copy(isRefreshingWeatherBriefs = false)
             }

@@ -14,7 +14,7 @@ interface WeatherRepository {
 
     suspend fun refreshCurrentWeather(location: GeoLocation): Result<Unit, GetWeatherError>
 
-    suspend fun refreshCurrentWeatherIfRefreshable(location: GeoLocation): Result<Unit, GetWeatherError>
+    suspend fun refreshCurrentWeatherIfRefreshable(location: GeoLocation): Result<Boolean, GetWeatherError>
 
 //    suspend fun getDailyForecast(location: GeoPoint): Result<List<DailyForecast>, GetWeatherError>
 //

@@ -1,6 +1,5 @@
 package com.example.weatherapp.location_search.domain.use_cases
 
-import android.util.Log
 import com.example.weatherapp.core.domain.Result
 import com.example.weatherapp.core.domain.model.GeoLocation
 import com.example.weatherapp.core.domain.model.GeoPoint

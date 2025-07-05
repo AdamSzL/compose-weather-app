@@ -1,15 +1,15 @@
 package com.example.weatherapp.weather.presentation
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingToolbarDefaults.ScreenOffset
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -36,8 +37,7 @@ import com.example.weatherapp.core.domain.model.formattedAddress
 import com.example.weatherapp.core.fake.fakeLocations
 import com.example.weatherapp.core.fake.fakeUserLocation
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.example.weatherapp.weather.presentation.components.EditModeFloatingActionButton
-import com.example.weatherapp.weather.presentation.components.EditModeTopAppBar
+import com.example.weatherapp.weather.presentation.components.EditModeHorizontalToolbar
 import com.example.weatherapp.weather.presentation.components.WeatherOverview
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherTileData
@@ -67,7 +67,7 @@ fun WeatherRoot(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WeatherScreen(
     location: GeoLocation,
@@ -90,7 +90,7 @@ fun WeatherScreen(
 
     Scaffold(
         topBar = {
-            if (weatherState.weatherHeaderInfo != null && !weatherState.isEditModeEnabled) {
+            if (weatherState.weatherHeaderInfo != null) {
                 CenterAlignedTopAppBar(
                     navigationIcon = {
                         IconButton(
@@ -113,45 +113,6 @@ fun WeatherScreen(
                         )
                     },
                 )
-            } else if (weatherState.isEditModeEnabled) {
-                EditModeTopAppBar(
-                    weatherState = weatherState,
-                    onWeatherScreenEvent = onWeatherScreenEvent
-                )
-            }
-        },
-        floatingActionButton = {
-            AnimatedContent(
-                targetState = weatherState.isEditModeEnabled,
-            ) { isEditModeEnabled ->
-                if (isEditModeEnabled) {
-                    EditModeFloatingActionButton(
-                        isDeleting = weatherState.isDeleteModeEnabled,
-                        onToggleDeleteMode = {
-                            onWeatherScreenEvent(WeatherScreenEvent.ToggleDeleteMode(it))
-                        },
-                        onSaveLayoutAndExitEditingMode = {
-                            onWeatherScreenEvent(WeatherScreenEvent.SaveLayoutAndExitEditMode)
-                        }
-                    )
-                } else {
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            onWeatherScreenEvent(WeatherScreenEvent.ToggleEditMode(true))
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = null
-                            )
-                        },
-                        text = {
-                            Text(
-                                text = stringResource(R.string.edit)
-                            )
-                        }
-                    )
-                }
             }
         },
         modifier = modifier
@@ -174,6 +135,33 @@ fun WeatherScreen(
                 },
                 modifier = Modifier
                     .padding(horizontal = dimensionResource(R.dimen.padding_big))
+            )
+            EditModeHorizontalToolbar(
+                weatherState = weatherState,
+                onEnterEditMode = {
+                    onWeatherScreenEvent(WeatherScreenEvent.ToggleEditMode(true))
+                },
+                onExitEditMode = {
+                    onWeatherScreenEvent(WeatherScreenEvent.SaveLayoutAndExitEditMode)
+                },
+                onUndoLayoutChange = {
+                    onWeatherScreenEvent(WeatherScreenEvent.UndoLayoutChange)
+                },
+                onRedoLayoutChange = {
+                    onWeatherScreenEvent(WeatherScreenEvent.RedoLayoutChange)
+                },
+                onToggleTilesLock = {
+                    onWeatherScreenEvent(WeatherScreenEvent.ToggleTilesLock(it))
+                },
+                onToggleDeleteMode = {
+                    onWeatherScreenEvent(WeatherScreenEvent.ToggleDeleteMode(it))
+                },
+                onShuffleTiles = {
+                    onWeatherScreenEvent(WeatherScreenEvent.ShuffleTiles)
+                },
+                modifier = Modifier
+                    .align(BottomEnd)
+                    .offset(x = -ScreenOffset, y = -ScreenOffset),
             )
         }
     }

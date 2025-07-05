@@ -1,5 +1,6 @@
 package com.example.weatherapp.core.data.repository
 
+import android.util.Log
 import com.example.weatherapp.core.data.local.WeatherLocalDataSource
 import com.example.weatherapp.core.data.local.mapper.toBriefWeather
 import com.example.weatherapp.core.data.local.mapper.toDetailedWeather
@@ -23,6 +24,8 @@ class WeatherRepositoryImpl(
     override suspend fun getBriefWeather(location: GeoLocation): Result<BriefWeather, GetWeatherError> {
         return try {
             var savedWeather = weatherLocalDataSource.getSavedWeather(location.id)
+            Log.d("XXX", "Saved weather for $location: $savedWeather")
+            Log.d("XXX", "isExpired: ${savedWeather?.isExpired()}")
             if (savedWeather == null || savedWeather.isExpired()) {
                 refreshCurrentWeather(location)
                 savedWeather = weatherLocalDataSource.getSavedWeather(location.id)
@@ -38,6 +41,7 @@ class WeatherRepositoryImpl(
     override suspend fun getDetailedWeather(location: GeoLocation): Result<DetailedWeather, GetWeatherError> {
         return try {
             var savedWeather = weatherLocalDataSource.getSavedWeather(location.id)
+            Log.d("XXX", "Saved weather for $location: $savedWeather")
             if (savedWeather == null || savedWeather.isExpired()) {
                 refreshCurrentWeather(location)
                 savedWeather = weatherLocalDataSource.getSavedWeather(location.id)
@@ -51,6 +55,7 @@ class WeatherRepositoryImpl(
     }
 
     override suspend fun refreshCurrentWeather(location: GeoLocation): Result<Unit, GetWeatherError> {
+        Log.d("XXX", "Refreshing current weather for: $location")
         val exclude = listOf(ExcludePart.MINUTELY, ExcludePart.HOURLY, ExcludePart.DAILY, ExcludePart.ALERTS)
         return try {
             val weatherResponse = weatherRemoteDataSource.fetchWeather(location.coordinates, exclude).current
@@ -61,13 +66,20 @@ class WeatherRepositoryImpl(
         }
     }
 
-    override suspend fun refreshCurrentWeatherIfRefreshable(location: GeoLocation): Result<Unit, GetWeatherError> {
+    override suspend fun refreshCurrentWeatherIfRefreshable(location: GeoLocation): Result<Boolean, GetWeatherError> {
+        Log.d("XXX", "Refreshing current weather if refreshable for: $location")
         val savedWeather = weatherLocalDataSource.getSavedWeather(location.id)
+        Log.d("XXX", "isRefreshable: ${savedWeather?.isRefreshable()}")
 
         return if (savedWeather == null || savedWeather.isRefreshable()) {
-            refreshCurrentWeather(location)
+            Log.d("XXX", "Refreshing current weather if refreshable for: $location")
+            when (val refreshResult = refreshCurrentWeather(location)) {
+                is Result.Success -> Result.Success(true)
+                is Result.Error -> Result.Error(refreshResult.error)
+            }
         } else {
-            Result.Success(Unit)
+            Log.d("XXX", "Refresh is not needed")
+            Result.Success(false)
         }
     }
 

@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -28,7 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.R
 import com.example.weatherapp.core.domain.consume
 import com.example.weatherapp.core.fake.fakeLocationWeatherBriefs
-import com.example.weatherapp.location_list.presentation.components.AddLocationFloatingActionButton
+import com.example.weatherapp.location_list.presentation.components.AddLocationFloatingActionButtonMenu
 import com.example.weatherapp.location_list.presentation.components.WeatherBriefList
 import com.example.weatherapp.location_search.presentation.user_location.LocationPermissionHandler
 import com.example.weatherapp.openAppSettings
@@ -111,24 +112,6 @@ fun LocationListScreen(
                 }
             )
         },
-        floatingActionButton = {
-            AddLocationFloatingActionButton(
-                isFabExpanded = isFabExpanded,
-                onExpandedToggle = {
-                    isFabExpanded = !isFabExpanded
-                },
-                onFetchUserLocation = {
-                    isPermissionDialogVisible = true
-                    isFabExpanded = false
-                },
-                onNavigateToLocationMap = {
-                    onLocationScreenEvent(LocationListScreenEvent.NavigateToLocationMap)
-                },
-                onNavigateToLocationSearch = {
-                    onLocationScreenEvent(LocationListScreenEvent.NavigateToLocationSearch)
-                },
-            )
-        },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
@@ -162,6 +145,23 @@ fun LocationListScreen(
                         .clickable { isFabExpanded = false }
                 )
             }
+            AddLocationFloatingActionButtonMenu(
+                isMenuExpanded = isFabExpanded,
+                onExpandedToggle = {
+                    isFabExpanded = !isFabExpanded
+                },
+                onFetchUserLocation = {
+                    isPermissionDialogVisible = true
+                    isFabExpanded = false
+                },
+                onNavigateToLocationMap = {
+                    onLocationScreenEvent(LocationListScreenEvent.NavigateToLocationMap)
+                },
+                onNavigateToLocationSearch = {
+                    onLocationScreenEvent(LocationListScreenEvent.NavigateToLocationSearch)
+                },
+                modifier = Modifier.align(BottomEnd)
+            )
         }
     }
 }

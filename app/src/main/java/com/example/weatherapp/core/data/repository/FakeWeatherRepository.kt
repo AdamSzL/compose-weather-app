@@ -36,11 +36,11 @@ class FakeWeatherRepository(
         }
     }
 
-    override suspend fun refreshCurrentWeatherIfRefreshable(location: GeoLocation): Result<Unit, GetWeatherError> {
+    override suspend fun refreshCurrentWeatherIfRefreshable(location: GeoLocation): Result<Boolean, GetWeatherError> {
         return if (shouldReturnError) {
             Result.Error(GetWeatherError.UnknownError)
         } else {
-            Result.Success(Unit)
+            Result.Success(true)
         }
     }
 

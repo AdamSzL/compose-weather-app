@@ -9,7 +9,7 @@ fun CurrentWeatherEntity.isExpired(currentTimeMillis: Long = System.currentTimeM
 }
 
 fun CurrentWeatherEntity.isRefreshable(currentTimeMillis: Long = System.currentTimeMillis()): Boolean {
-    val fiveMinutesMillis = 5 * 60 * 1000L
+    val tenMinutesMillis = 10 * 60 * 1000L
     val dtMillis = dt * 1000L
-    return (currentTimeMillis - dtMillis) > fiveMinutesMillis
+    return (currentTimeMillis - dtMillis) > tenMinutesMillis
 }

@@ -9,15 +9,12 @@ import com.example.weatherapp.core.presentation.UiText
 import com.example.weatherapp.location_list.data.repository.saved_locations.SavedLocationsRepository
 import com.example.weatherapp.weather.domain.use_cases.DeleteTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.MoveTileUseCase
-import com.example.weatherapp.weather.domain.use_cases.ResetLayoutUseCase
 import com.example.weatherapp.weather.domain.use_cases.SaveLayoutInHistoryUseCase
 import com.example.weatherapp.weather.presentation.mapper.toWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.mapper.toWeatherTiles
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -26,7 +23,6 @@ class WeatherViewModel(
     private val moveTilesUseCase: MoveTileUseCase,
     private val deleteTileUseCase: DeleteTileUseCase,
     private val saveLayoutInHistoryUseCase: SaveLayoutInHistoryUseCase,
-    private val resetLayoutUseCase: ResetLayoutUseCase,
     private val weatherRepository: WeatherRepository,
     private val savedLocationsRepository: SavedLocationsRepository,
 ): ViewModel() {
@@ -34,18 +30,8 @@ class WeatherViewModel(
     private val _weatherState = MutableStateFlow(WeatherState())
     val weatherState = _weatherState.asStateFlow()
 
-    private val autoSaveLayoutChanges = MutableSharedFlow<Unit>(replay = 0)
-    private val autoSaveDelay = 2000L
-
     init {
         fetchCurrentWeatherInfo()
-        viewModelScope.launch {
-            autoSaveLayoutChanges
-                .debounce(autoSaveDelay)
-                .collect {
-                    saveLayoutOnDevice()
-                }
-        }
     }
 
     fun onWeatherScreenEvent(weatherScreenEvent: WeatherScreenEvent) {
@@ -56,9 +42,7 @@ class WeatherViewModel(
             is WeatherScreenEvent.DeleteTile -> deleteTile(weatherScreenEvent.tileId)
             is WeatherScreenEvent.MoveTile -> moveTile(weatherScreenEvent.from, weatherScreenEvent.to)
             is WeatherScreenEvent.ShuffleTiles -> shuffleTiles()
-            is WeatherScreenEvent.ToggleAutoSave -> toggleAutoSave(weatherScreenEvent.checked)
             is WeatherScreenEvent.SaveLayout -> saveLayout()
-            is WeatherScreenEvent.ResetLayout -> resetLayout()
             is WeatherScreenEvent.UndoLayoutChange -> undoLayoutChange()
             is WeatherScreenEvent.RedoLayoutChange -> redoLayoutChange()
             is WeatherScreenEvent.SaveLayoutAndExitEditMode -> saveLayoutAndExitEditMode()
@@ -127,7 +111,7 @@ class WeatherViewModel(
             it.copy(weatherTileData = moveTilesUseCase(it.weatherTileData, from, to))
         }
         saveLayoutInHistory()
-        // debounce? Jak ktoś kilka razy przesuwa to wtedy lipa
+        // maybe debounce? if somebody moves tiles a lot
     }
 
     private fun shuffleTiles() {
@@ -135,12 +119,6 @@ class WeatherViewModel(
             it.copy(weatherTileData = it.weatherTileData.shuffled())
         }
         saveLayoutInHistory()
-    }
-
-    private fun toggleAutoSave(checked: Boolean) {
-        _weatherState.update {
-            it.copy(isAutoSaveEnabled = checked)
-        }
     }
 
     private fun saveLayoutInHistory() {
@@ -151,33 +129,21 @@ class WeatherViewModel(
                 currentWeatherTileDataIndex = tileDataIndex
             )
         }
-        saveLayoutIfAutoSaveEnabled()
-    }
-
-    private fun resetLayout() {
-        _weatherState.update {
-            val (newHistory, tileData, tileDataIndex) = resetLayoutUseCase(it.weatherTileDataHistory, it.currentWeatherTileDataIndex)
-            it.copy(
-                weatherTileDataHistory = newHistory,
-                weatherTileData = tileData,
-                currentWeatherTileDataIndex = tileDataIndex
-            )
-        }
-        saveLayoutIfAutoSaveEnabled()
+        saveLayout()
     }
 
     private fun undoLayoutChange() {
         if (_weatherState.value.currentWeatherTileDataIndex > 0) {
             changeLayoutState(_weatherState.value.currentWeatherTileDataIndex - 1)
         }
-        saveLayoutIfAutoSaveEnabled()
+        saveLayout()
     }
 
     private fun redoLayoutChange() {
         if (_weatherState.value.currentWeatherTileDataIndex < _weatherState.value.weatherTileDataHistory.size - 1) {
             changeLayoutState(_weatherState.value.currentWeatherTileDataIndex + 1)
         }
-        saveLayoutIfAutoSaveEnabled()
+        saveLayout()
     }
 
     private fun changeLayoutState(index: Int) {
@@ -186,14 +152,6 @@ class WeatherViewModel(
                 weatherTileData = it.weatherTileDataHistory[index],
                 currentWeatherTileDataIndex = index
             )
-        }
-    }
-
-    private fun saveLayoutIfAutoSaveEnabled() {
-        if (_weatherState.value.isAutoSaveEnabled) {
-            viewModelScope.launch {
-                autoSaveLayoutChanges.emit(Unit)
-            }
         }
     }
 
@@ -207,7 +165,7 @@ class WeatherViewModel(
         _weatherState.update {
             it.copy(isSavingLayout = true)
         }
-        delay(2000)
+        delay(200)
         _weatherState.update {
             it.copy(isSavingLayout = false)
         }

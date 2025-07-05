@@ -16,11 +16,7 @@ sealed interface WeatherScreenEvent {
 
     data object ShuffleTiles: WeatherScreenEvent
 
-    data class ToggleAutoSave(val checked: Boolean): WeatherScreenEvent
-
     data object SaveLayout: WeatherScreenEvent
-
-    data object ResetLayout: WeatherScreenEvent
 
     data object UndoLayoutChange: WeatherScreenEvent
 

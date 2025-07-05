@@ -13,6 +13,8 @@ import com.example.weatherapp.location_search.domain.models.FetchUserLocationErr
 import com.example.weatherapp.location_search.domain.models.asUiText
 import com.example.weatherapp.location_list.presentation.LocationListScreenEvent
 import com.example.weatherapp.location_list.presentation.LocationListViewModel
+import com.example.weatherapp.location_search.data.repository.location_permission.FakeLocationPermissionRepository
+import com.example.weatherapp.location_search.data.repository.location_permission.LocationPermissionRepository
 import com.example.weatherapp.location_search.data.repository.user_location.FakeUserLocationRepository
 import com.example.weatherapp.location_search.data.repository.user_location.UserLocationRepository
 import com.example.weatherapp.location_search.domain.use_cases.SaveLocationUseCase
@@ -31,6 +33,7 @@ class LocationListViewModelTest {
     private lateinit var saveLocationUseCase: SaveLocationUseCase
     private lateinit var savedLocationsRepository: SavedLocationsRepository
     private lateinit var weatherRepository: WeatherRepository
+    private lateinit var locationPermissionRepository: LocationPermissionRepository
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -39,7 +42,8 @@ class LocationListViewModelTest {
     fun setUp() {
         savedLocationsRepository = FakeSavedLocationsRepository()
         userLocationRepository = FakeUserLocationRepository()
-        viewModel = LocationListViewModel(userLocationRepository, fetchLocationWeatherBriefUseCase, saveLocationUseCase, savedLocationsRepository, weatherRepository)
+        locationPermissionRepository = FakeLocationPermissionRepository()
+//        viewModel = LocationListViewModel(userLocationRepository, fetchLocationWeatherBriefUseCase, saveLocationUseCase, savedLocationsRepository, weatherRepository, locationPermissionRepository)
     }
 
 //    @Test

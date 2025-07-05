@@ -10,8 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
@@ -22,7 +26,7 @@ import com.example.weatherapp.core.fake.fakeLocationWeatherBriefs
 import com.example.weatherapp.location_list.domain.models.LocationWeatherBrief
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WeatherBriefList(
     locations: List<LocationWeatherBrief>,
@@ -32,9 +36,18 @@ fun WeatherBriefList(
     onWeatherBriefRefresh: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val state = rememberPullToRefreshState()
     PullToRefreshBox(
+        state = state,
         isRefreshing = isRefreshingWeatherBriefs,
         onRefresh = onWeatherBriefRefresh,
+        indicator = {
+            PullToRefreshDefaults.LoadingIndicator(
+                state = state,
+                isRefreshing = isRefreshingWeatherBriefs,
+                modifier = Modifier.align(TopCenter)
+            )
+        },
         modifier = modifier
     ) {
         LazyColumn(

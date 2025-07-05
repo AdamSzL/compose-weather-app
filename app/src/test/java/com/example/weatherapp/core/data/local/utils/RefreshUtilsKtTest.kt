@@ -99,10 +99,10 @@ class RefreshUtilsKtTest {
     }
 
     @Test
-    fun `isRefreshable returns true when data is older than 5 minutes`() {
+    fun `isRefreshable returns true when data is older than 10 minutes`() {
         val currentTime = System.currentTimeMillis()
-        val sixMinutesAgoInMillis = currentTime - (6 * 60 * 1000L)
-        val dtInSeconds = sixMinutesAgoInMillis / 1000L
+        val elevenMinutesAgoInMillis = currentTime - (11 * 60 * 1000L)
+        val dtInSeconds = elevenMinutesAgoInMillis / 1000L
         val entity = fakeCurrentWeatherEntity(dt = dtInSeconds)
 
         val result = entity.isRefreshable(currentTimeMillis = currentTime)
@@ -111,10 +111,10 @@ class RefreshUtilsKtTest {
     }
 
     @Test
-    fun `isRefreshable returns false when data is slightly younger than 5 minutes`() {
+    fun `isRefreshable returns false when data is slightly younger than 10 minutes`() {
         val currentTime = System.currentTimeMillis()
-        val fourMinutesAgoInMillis = currentTime - (4 * 60 * 1000L)
-        val dtInSeconds = fourMinutesAgoInMillis / 1000L
+        val nineMinutesAgoInMillis = currentTime - (9 * 60 * 1000L)
+        val dtInSeconds = nineMinutesAgoInMillis / 1000L
         val entity = fakeCurrentWeatherEntity(dt = dtInSeconds)
 
         val result = entity.isRefreshable(currentTimeMillis = currentTime)

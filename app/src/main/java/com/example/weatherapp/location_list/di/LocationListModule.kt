@@ -29,4 +29,5 @@ val locationListModule = module {
     }
     viewModelOf(::LocationListViewModel)
     singleOf(::FetchLocationWeatherBriefUseCase)
+    singleOf(::RefreshSavedLocationsWeatherBriefUseCase)
 }
