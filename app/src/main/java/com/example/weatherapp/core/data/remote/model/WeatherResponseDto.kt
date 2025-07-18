@@ -10,6 +10,6 @@ data class WeatherResponseDto(
     val timezone: String,
     @SerialName("timezone_offset") val timezoneOffset: Int,
     val current: CurrentWeatherDto,
-    val hourly: List<HourlyWeatherDto>? = null,
-    val daily: List<DailyWeatherDto>? = null
+    val hourly: List<HourlyWeatherDto>,
+    val daily: List<DailyWeatherDto>,
 )

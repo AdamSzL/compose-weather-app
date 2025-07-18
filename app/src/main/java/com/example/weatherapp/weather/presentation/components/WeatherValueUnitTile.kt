@@ -16,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.example.weatherapp.R
-import com.example.weatherapp.core.presentation.components.WeatherCard
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
 @Composable

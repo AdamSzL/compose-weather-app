@@ -1,6 +1,5 @@
 package com.example.weatherapp.core.data.remote.model
 
-import com.example.weatherapp.core.domain.model.HourlyForecast
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -21,14 +20,3 @@ data class HourlyWeatherDto(
     val weather: List<WeatherDescriptionDto>,
     val pop: Double
 )
-
-fun List<HourlyWeatherDto>.toHourlyForecastList(): List<HourlyForecast> {
-    return map { dto ->
-        HourlyForecast(
-            dt = dto.dt,
-            temperature = dto.temp,
-            weatherIcon = dto.weather.firstOrNull()?.icon ?: "01d",
-            precipitationProbability = dto.pop,
-        )
-    }
-}

@@ -1,6 +1,8 @@
 package com.example.weatherapp.weather.di
 
 import com.example.weatherapp.forecast.presentation.ForecastViewModel
+import com.example.weatherapp.weather.data.repository.TileLayoutRepository
+import com.example.weatherapp.weather.data.repository.TileLayoutRepositoryImpl
 import com.example.weatherapp.weather.domain.use_cases.DeleteTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.MoveTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.SaveLayoutInHistoryUseCase
@@ -15,4 +17,8 @@ val weatherModule = module {
     singleOf(::DeleteTileUseCase)
     singleOf(::MoveTileUseCase)
     singleOf(::SaveLayoutInHistoryUseCase)
+
+    single<TileLayoutRepository> {
+        TileLayoutRepositoryImpl(get())
+    }
 }

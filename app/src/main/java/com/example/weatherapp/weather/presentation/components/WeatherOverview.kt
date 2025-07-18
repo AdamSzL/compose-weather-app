@@ -18,19 +18,21 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
+import com.example.weatherapp.core.fake.fakeUserLocation
 import com.example.weatherapp.ui.theme.WeatherAppTheme
+import com.example.weatherapp.weather.presentation.WeatherInfo
+import com.example.weatherapp.weather.presentation.components.tiles.forecast.DailyForecastTile
+import com.example.weatherapp.weather.presentation.components.tiles.forecast.HourlyForecastTile
+import com.example.weatherapp.weather.presentation.fake.fakeDetailedWeather
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherTileData
-import com.example.weatherapp.weather.presentation.model.WeatherHeaderInfo
-import com.example.weatherapp.weather.presentation.model.WeatherTileData
 import com.example.weatherapp.weather.presentation.utils.shake
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyGridState
 
 @Composable
 fun WeatherOverview(
-    weatherHeaderInfo: WeatherHeaderInfo,
-    weatherTileData: List<WeatherTileData>,
+    weatherInfo: WeatherInfo,
     areTilesReorderable: Boolean,
     areTilesRemovable: Boolean,
     onDeleteTile: (String) -> Unit,
@@ -38,8 +40,9 @@ fun WeatherOverview(
     modifier: Modifier = Modifier
 ) {
     val lazyGridState = rememberLazyGridState()
+    val numOfFixedElements = 3
     val reorderableLazyGridState = rememberReorderableLazyGridState(lazyGridState) { from, to ->
-        onMoveTile(from.index - 1, to.index - 1)
+        onMoveTile(from.index - numOfFixedElements, to.index - numOfFixedElements)
     }
     val hapticFeedback = LocalHapticFeedback.current
 
@@ -55,11 +58,29 @@ fun WeatherOverview(
             GridItemSpan(maxLineSpan)
         }) {
             WeatherHeader(
-                weatherHeaderInfo = weatherHeaderInfo,
+                weatherHeaderInfo = weatherInfo.weatherHeaderInfo,
                 modifier = Modifier.testTag("WeatherHeader")
             )
         }
-        items(weatherTileData, key = { it.tileId }) { tileData ->
+        item(span = {
+            GridItemSpan(maxLineSpan)
+        }) {
+            HourlyForecastTile(
+                hourlyForecast = weatherInfo.hourlyForecast,
+                timezone = weatherInfo.timezone
+            )
+        }
+        item(span = {
+            GridItemSpan(maxLineSpan)
+        }) {
+            DailyForecastTile(
+                dailyForecast = weatherInfo.dailyForecast
+            )
+        }
+        items(
+            items = weatherInfo.weatherTileData,
+            key = { it.tileId },
+        ) { tileData ->
             val tileModifier = Modifier.aspectRatio(1f).animateItem()
             if (areTilesReorderable) {
                 ReorderableItem(
@@ -91,7 +112,9 @@ fun WeatherOverview(
                 )
             }
         }
-        item {
+        item(span = {
+            GridItemSpan(maxLineSpan)
+        }) {
             Spacer(
                 modifier = Modifier
                     .testTag("GridBottomSpacer")
@@ -106,8 +129,14 @@ fun WeatherOverview(
 private fun WeatherDetailsPreview() {
     WeatherAppTheme {
         WeatherOverview(
-            weatherHeaderInfo = fakeWeatherHeaderInfo,
-            weatherTileData = fakeWeatherTileData,
+            weatherInfo = WeatherInfo(
+                location = fakeUserLocation,
+                timezone = "Europe/Warsaw",
+                hourlyForecast = fakeDetailedWeather.hourlyForecast,
+                dailyForecast = fakeDetailedWeather.dailyForecast,
+                weatherHeaderInfo = fakeWeatherHeaderInfo,
+                weatherTileData = fakeWeatherTileData,
+            ),
             areTilesReorderable = true,
             areTilesRemovable = false,
             onDeleteTile = {},

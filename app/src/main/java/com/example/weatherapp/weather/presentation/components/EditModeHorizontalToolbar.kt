@@ -30,6 +30,7 @@ fun EditModeHorizontalToolbar(
     weatherState: WeatherState,
     onEnterEditMode: () -> Unit,
     onExitEditMode: () -> Unit,
+    onResetLayout: () -> Unit,
     onUndoLayoutChange: () -> Unit,
     onRedoLayoutChange: () -> Unit,
     onToggleTilesLock: (Boolean) -> Unit,
@@ -58,7 +59,16 @@ fun EditModeHorizontalToolbar(
         colors = vibrantFloatingToolbarColors(),
         content = {
             IconButton(
-                enabled = weatherState.currentWeatherTileDataIndex > 0,
+                enabled = weatherState.isSavingLayout.not(),
+                onClick = onResetLayout,
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_reset),
+                    contentDescription = stringResource(R.string.reset_tiles)
+                )
+            }
+            IconButton(
+                enabled = weatherState.currentWeatherTileDataIndex > 0 && weatherState.isSavingLayout.not(),
                 onClick = onUndoLayoutChange,
             ) {
                 Icon(
@@ -67,7 +77,7 @@ fun EditModeHorizontalToolbar(
                 )
             }
             IconButton(
-                enabled = weatherState.currentWeatherTileDataIndex < weatherState.weatherTileDataHistory.size - 1,
+                enabled = weatherState.currentWeatherTileDataIndex < weatherState.weatherTileDataHistory.size - 1 && weatherState.isSavingLayout.not(),
                 onClick = onRedoLayoutChange,
             ) {
                 Icon(
@@ -76,6 +86,7 @@ fun EditModeHorizontalToolbar(
                 )
             }
             FilledTonalIconToggleButton(
+                enabled = weatherState.isSavingLayout.not(),
                 checked = weatherState.areTilesLocked,
                 onCheckedChange = { onToggleTilesLock(it) },
             ) {
@@ -96,6 +107,7 @@ fun EditModeHorizontalToolbar(
                 }
             }
             FilledIconToggleButton(
+                enabled = weatherState.isSavingLayout.not(),
                 checked = weatherState.isDeleteModeEnabled,
                 onCheckedChange = { onToggleDeleteMode(it) },
             ) {
@@ -105,6 +117,7 @@ fun EditModeHorizontalToolbar(
                 )
             }
             IconButton(
+                enabled = weatherState.isSavingLayout.not(),
                 onClick = onShuffleTiles,
             ) {
                 Icon(
@@ -141,6 +154,7 @@ private fun EditModeHorizontalToolbarPreview(
             weatherState = weatherState,
             onEnterEditMode = {},
             onExitEditMode = {},
+            onResetLayout = {},
             onUndoLayoutChange = {},
             onRedoLayoutChange = {},
             onToggleTilesLock = {},

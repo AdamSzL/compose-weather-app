@@ -29,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.R
 import com.example.weatherapp.core.domain.consume
 import com.example.weatherapp.core.fake.fakeLocationWeatherBriefs
+import com.example.weatherapp.core.presentation.components.ScreenWithLoadingContent
 import com.example.weatherapp.location_list.presentation.components.AddLocationFloatingActionButtonMenu
 import com.example.weatherapp.location_list.presentation.components.WeatherBriefList
 import com.example.weatherapp.location_search.presentation.user_location.LocationPermissionHandler
@@ -117,51 +118,56 @@ fun LocationListScreen(
         },
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
-        Box(
+        ScreenWithLoadingContent(
+            isLoadingContent = locationListState.isLoadingLocations,
             modifier = Modifier
-                .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            WeatherBriefList(
-                locations = locationListState.locationsWithWeatherBrief,
-                isRefreshingWeatherBriefs = locationListState.isRefreshingWeatherBriefs,
-                onNavigateToWeatherScreen = {
-                    onLocationScreenEvent(LocationListScreenEvent.NavigateToWeatherScreen(it))
-                },
-                onLocationDelete = {
-                    onLocationScreenEvent(LocationListScreenEvent.DeleteLocation(it))
-                },
-                onWeatherBriefRefresh = {
-                    onLocationScreenEvent(LocationListScreenEvent.RefreshSavedLocationsWeatherBrief)
-                },
-                modifier = Modifier.fillMaxSize()
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                WeatherBriefList(
+                    locations = locationListState.locationsWithWeatherBrief,
+                    isRefreshingWeatherBriefs = locationListState.isRefreshingWeatherBriefs,
+                    onNavigateToWeatherScreen = {
+                        onLocationScreenEvent(LocationListScreenEvent.NavigateToWeatherScreen(it))
+                    },
+                    onLocationDelete = {
+                        onLocationScreenEvent(LocationListScreenEvent.DeleteLocation(it))
+                    },
+                    onWeatherBriefRefresh = {
+                        onLocationScreenEvent(LocationListScreenEvent.RefreshSavedLocationsWeatherBrief)
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
 
-            if (isFabExpanded) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.5f))
-                        .clickable { isFabExpanded = false }
+                if (isFabExpanded) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.5f))
+                            .clickable { isFabExpanded = false }
+                    )
+                }
+                AddLocationFloatingActionButtonMenu(
+                    isMenuExpanded = isFabExpanded,
+                    onExpandedToggle = {
+                        isFabExpanded = !isFabExpanded
+                    },
+                    onFetchUserLocation = {
+                        isPermissionDialogVisible = true
+                        isFabExpanded = false
+                    },
+                    onNavigateToLocationMap = {
+                        onLocationScreenEvent(LocationListScreenEvent.NavigateToLocationMap)
+                    },
+                    onNavigateToLocationSearch = {
+                        onLocationScreenEvent(LocationListScreenEvent.NavigateToLocationSearch)
+                    },
+                    modifier = Modifier.align(BottomEnd)
                 )
             }
-            AddLocationFloatingActionButtonMenu(
-                isMenuExpanded = isFabExpanded,
-                onExpandedToggle = {
-                    isFabExpanded = !isFabExpanded
-                },
-                onFetchUserLocation = {
-                    isPermissionDialogVisible = true
-                    isFabExpanded = false
-                },
-                onNavigateToLocationMap = {
-                    onLocationScreenEvent(LocationListScreenEvent.NavigateToLocationMap)
-                },
-                onNavigateToLocationSearch = {
-                    onLocationScreenEvent(LocationListScreenEvent.NavigateToLocationSearch)
-                },
-                modifier = Modifier.align(BottomEnd)
-            )
         }
     }
 }

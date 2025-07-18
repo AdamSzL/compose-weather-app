@@ -2,13 +2,13 @@ package com.example.weatherapp.location_search.di
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.example.weatherapp.core.data.utils.dataStore
 import com.example.weatherapp.location_search.data.repository.location_permission.LocationPermissionRepository
 import com.example.weatherapp.location_search.data.repository.location_permission.LocationPermissionRepositoryImpl
 import com.example.weatherapp.location_search.data.repository.place_search.LocationSearchRepository
 import com.example.weatherapp.location_search.data.repository.place_search.LocationSearchRepositoryImpl
 import com.example.weatherapp.location_search.data.repository.user_location.UserLocationRepository
 import com.example.weatherapp.location_search.data.repository.user_location.UserLocationRepositoryImpl
-import com.example.weatherapp.location_search.data.utils.dataStore
 import com.example.weatherapp.location_search.domain.use_cases.FetchPlaceSuggestionsUseCase
 import com.example.weatherapp.location_search.domain.use_cases.SaveLocationUseCase
 import com.example.weatherapp.location_search.presentation.map.LocationMapViewModel

@@ -5,14 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.core.data.repository.WeatherRepository
 import com.example.weatherapp.core.domain.Result
 import com.example.weatherapp.core.domain.error.asUiText
+import com.example.weatherapp.core.domain.model.DetailedWeather
 import com.example.weatherapp.core.presentation.UiText
 import com.example.weatherapp.location_list.data.repository.saved_locations.SavedLocationsRepository
+import com.example.weatherapp.weather.data.repository.TileLayoutRepository
 import com.example.weatherapp.weather.domain.use_cases.DeleteTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.MoveTileUseCase
 import com.example.weatherapp.weather.domain.use_cases.SaveLayoutInHistoryUseCase
 import com.example.weatherapp.weather.presentation.mapper.toWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.mapper.toWeatherTiles
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -25,10 +26,13 @@ class WeatherViewModel(
     private val saveLayoutInHistoryUseCase: SaveLayoutInHistoryUseCase,
     private val weatherRepository: WeatherRepository,
     private val savedLocationsRepository: SavedLocationsRepository,
+    private val tileLayoutRepository: TileLayoutRepository,
 ): ViewModel() {
 
     private val _weatherState = MutableStateFlow(WeatherState())
     val weatherState = _weatherState.asStateFlow()
+
+    lateinit var detailedWeather: DetailedWeather
 
     init {
         fetchCurrentWeatherInfo()
@@ -39,10 +43,10 @@ class WeatherViewModel(
             is WeatherScreenEvent.ToggleEditMode -> toggleEditMode(weatherScreenEvent.enabled)
             is WeatherScreenEvent.ToggleDeleteMode -> toggleDeleteMode(weatherScreenEvent.enabled)
             is WeatherScreenEvent.ToggleTilesLock -> toggleTilesLock(weatherScreenEvent.locked)
-            is WeatherScreenEvent.DeleteTile -> deleteTile(weatherScreenEvent.tileId)
-            is WeatherScreenEvent.MoveTile -> moveTile(weatherScreenEvent.from, weatherScreenEvent.to)
-            is WeatherScreenEvent.ShuffleTiles -> shuffleTiles()
-            is WeatherScreenEvent.SaveLayout -> saveLayout()
+            is WeatherScreenEvent.DeleteTile -> updateTiles(TileAction.Delete(weatherScreenEvent.tileId))
+            is WeatherScreenEvent.MoveTile -> updateTiles(TileAction.Move(weatherScreenEvent.from, weatherScreenEvent.to))
+            is WeatherScreenEvent.ShuffleTiles -> updateTiles(TileAction.Shuffle)
+            is WeatherScreenEvent.ResetLayout -> resetLayout()
             is WeatherScreenEvent.UndoLayoutChange -> undoLayoutChange()
             is WeatherScreenEvent.RedoLayoutChange -> redoLayoutChange()
             is WeatherScreenEvent.SaveLayoutAndExitEditMode -> saveLayoutAndExitEditMode()
@@ -52,14 +56,25 @@ class WeatherViewModel(
     }
 
     private fun fetchCurrentWeatherInfo() {
+        toggleIsLoadingWeather(true)
         viewModelScope.launch {
             val location = savedLocationsRepository.getLocationById(locationId)
             when (val getDetailedWeatherResult = weatherRepository.getDetailedWeather(location)) {
                 is Result.Success -> {
+                    val savedTileOrder = tileLayoutRepository.loadTileOrder()
+                    detailedWeather = getDetailedWeatherResult.data
+                    val weatherTileData = detailedWeather.toWeatherTiles(savedTileOrder)
                     _weatherState.update {
                         it.copy(
-                            weatherHeaderInfo = getDetailedWeatherResult.data.toWeatherHeaderInfo(),
-                            weatherTileData = getDetailedWeatherResult.data.toWeatherTiles()
+                            weatherInfo = WeatherInfo(
+                                location = location,
+                                timezone = detailedWeather.timezone,
+                                hourlyForecast = detailedWeather.hourlyForecast,
+                                dailyForecast = detailedWeather.dailyForecast,
+                                weatherHeaderInfo = detailedWeather.toWeatherHeaderInfo(),
+                                weatherTileData = weatherTileData,
+                            ),
+                            weatherTileDataHistory = listOf(weatherTileData)
                         )
                     }
                 }
@@ -69,12 +84,19 @@ class WeatherViewModel(
                     }
                 }
             }
+            toggleIsLoadingWeather(false)
         }
     }
 
     private fun showMessage(message: UiText?) {
         _weatherState.update {
             it.copy(message = message)
+        }
+    }
+
+    private fun toggleIsLoadingWeather(isLoading: Boolean) {
+        _weatherState.update {
+            it.copy(isLoading = isLoading)
         }
     }
 
@@ -99,82 +121,84 @@ class WeatherViewModel(
         }
     }
 
-    private fun deleteTile(tileId: String) {
+    private fun toggleIsSavingLayout(isSaving: Boolean) {
         _weatherState.update {
-            it.copy(weatherTileData = deleteTileUseCase(it.weatherTileData, tileId))
+            it.copy(isSavingLayout = isSaving)
         }
-        saveLayoutInHistory()
     }
 
-    private fun moveTile(from: Int, to: Int) {
-        _weatherState.update {
-            it.copy(weatherTileData = moveTilesUseCase(it.weatherTileData, from, to))
+    private fun updateTiles(action: TileAction) {
+        val tileDataHistory = _weatherState.value.weatherTileDataHistory
+        val currentTileData = _weatherState.value.weatherInfo!!.weatherTileData
+        val newTileData = when (action) {
+            is TileAction.Delete -> deleteTileUseCase(currentTileData, action.tileId)
+            is TileAction.Move -> moveTilesUseCase(currentTileData, action.from, action.to)
+            is TileAction.Shuffle -> currentTileData.shuffled()
+            is TileAction.JumpToHistoryIndex -> tileDataHistory[action.index]
         }
-        saveLayoutInHistory()
-        // maybe debounce? if somebody moves tiles a lot
-    }
-
-    private fun shuffleTiles() {
-        _weatherState.update {
-            it.copy(weatherTileData = it.weatherTileData.shuffled())
+        _weatherState.update { state ->
+            state.weatherInfo?.let { info ->
+                state.copy(
+                    weatherInfo = info.copy(
+                        weatherTileData = newTileData
+                    )
+                )
+            } ?: state
         }
         saveLayoutInHistory()
     }
 
     private fun saveLayoutInHistory() {
         _weatherState.update {
-            val (newHistory, tileDataIndex) = saveLayoutInHistoryUseCase(it.weatherTileDataHistory, it.weatherTileData, it.currentWeatherTileDataIndex)
+            val (newHistory, tileDataIndex) = saveLayoutInHistoryUseCase(it.weatherTileDataHistory, it.weatherInfo!!.weatherTileData, it.currentWeatherTileDataIndex)
             it.copy(
                 weatherTileDataHistory = newHistory,
                 currentWeatherTileDataIndex = tileDataIndex
             )
         }
-        saveLayout()
+    }
+
+    private fun resetLayout() {
+        viewModelScope.launch {
+            _weatherState.update {
+                it.copy(
+                    weatherInfo = it.weatherInfo!!.copy(
+                        weatherTileData = detailedWeather.toWeatherTiles()
+                    )
+                )
+            }
+            tileLayoutRepository.resetTileOrder()
+            saveLayoutInHistory()
+        }
     }
 
     private fun undoLayoutChange() {
         if (_weatherState.value.currentWeatherTileDataIndex > 0) {
             changeLayoutState(_weatherState.value.currentWeatherTileDataIndex - 1)
         }
-        saveLayout()
     }
 
     private fun redoLayoutChange() {
         if (_weatherState.value.currentWeatherTileDataIndex < _weatherState.value.weatherTileDataHistory.size - 1) {
             changeLayoutState(_weatherState.value.currentWeatherTileDataIndex + 1)
         }
-        saveLayout()
     }
 
     private fun changeLayoutState(index: Int) {
+        updateTiles(TileAction.JumpToHistoryIndex(index))
         _weatherState.update {
-            it.copy(
-                weatherTileData = it.weatherTileDataHistory[index],
-                currentWeatherTileDataIndex = index
-            )
-        }
-    }
-
-    private fun saveLayout() {
-        viewModelScope.launch {
-            saveLayoutOnDevice()
-        }
-    }
-
-    private suspend fun saveLayoutOnDevice() {
-        _weatherState.update {
-            it.copy(isSavingLayout = true)
-        }
-        delay(200)
-        _weatherState.update {
-            it.copy(isSavingLayout = false)
+            it.copy(currentWeatherTileDataIndex = index)
         }
     }
 
     private fun saveLayoutAndExitEditMode() {
-        viewModelScope.launch {
-            saveLayoutOnDevice()
-            toggleEditMode(false)
+        if (_weatherState.value.isSavingLayout.not()) {
+            viewModelScope.launch {
+                toggleIsSavingLayout(true)
+                tileLayoutRepository.saveTileOrder(_weatherState.value.weatherInfo!!.weatherTileData)
+                toggleIsSavingLayout(false)
+                toggleEditMode(false)
+            }
         }
     }
 }

@@ -1,8 +1,9 @@
 package com.example.weatherapp.core.domain.model
 
 data class DetailedWeather(
-    val temperature: Double,
-    val feelsLike: Double,
+    val timezone: String,
+    val temperature: Int,
+    val feelsLike: Int,
     val description: String,
     val icon: String,
     val pressure: Int,
@@ -16,4 +17,6 @@ data class DetailedWeather(
     val snow: Double?,
     val sunrise: Long,
     val sunset: Long,
+    val hourlyForecast: List<HourlyForecast>,
+    val dailyForecast: List<DailyForecast>
 )

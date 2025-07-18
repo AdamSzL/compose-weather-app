@@ -6,11 +6,10 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "current_weather")
 data class CurrentWeatherEntity(
     @PrimaryKey val locationId: Long,
-
+    val timezone: String,
     val dt: Long,
     val sunrise: Long,
     val sunset: Long,
-
     val temp: Double,
     val feelsLike: Double,
     val pressure: Int,
@@ -19,14 +18,11 @@ data class CurrentWeatherEntity(
     val uvi: Double,
     val clouds: Int,
     val visibility: Int,
-
     val windSpeed: Double,
     val windDeg: Int,
     val windGust: Double? = null,
-
     val weatherIcon: String,
     val weatherDescription: String,
-
     val rain: Double?,
     val snow: Double?,
 )

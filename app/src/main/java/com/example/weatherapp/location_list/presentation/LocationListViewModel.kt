@@ -49,12 +49,14 @@ class LocationListViewModel(
     }
 
     private fun fetchSavedLocations() {
+        toggleIsLoadingLocations(true)
         viewModelScope.launch {
             fetchLocationWeatherBriefUseCase()
                 .collect { locationsWithWeatherBrief ->
                     _locationListState.update {
                         it.copy(locationsWithWeatherBrief = locationsWithWeatherBrief)
                     }
+                    toggleIsLoadingLocations(false)
                 }
         }
     }
@@ -88,6 +90,12 @@ class LocationListViewModel(
             _locationListState.update {
                 it.copy(isRefreshingWeatherBriefs = false)
             }
+        }
+    }
+
+    private fun toggleIsLoadingLocations(isLoading: Boolean) {
+        _locationListState.update {
+            it.copy(isLoadingLocations = isLoading)
         }
     }
 

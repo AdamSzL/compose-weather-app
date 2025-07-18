@@ -1,10 +1,10 @@
 package com.example.weatherapp.core.data.local
 
-import com.example.weatherapp.core.data.local.entity.CurrentWeatherEntity
+import com.example.weatherapp.core.data.local.model.FullWeatherEntity
 
 interface WeatherLocalDataSource {
 
-    suspend fun getSavedWeather(locationId: Long): CurrentWeatherEntity?
+    suspend fun getFullWeather(locationId: Long): FullWeatherEntity?
 
-    suspend fun saveCurrentWeather(weather: CurrentWeatherEntity)
+    suspend fun saveFullWeather(fullWeatherEntity: FullWeatherEntity)
 }

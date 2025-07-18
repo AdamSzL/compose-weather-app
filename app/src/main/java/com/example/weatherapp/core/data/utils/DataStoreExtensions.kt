@@ -1,4 +1,4 @@
-package com.example.weatherapp.location_search.data.utils
+package com.example.weatherapp.core.data.utils
 
 import android.content.Context
 import androidx.datastore.core.DataStore

@@ -21,8 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.weatherapp.R
-import com.example.weatherapp.core.presentation.components.WeatherCard
 import com.example.weatherapp.ui.theme.WeatherAppTheme
+import com.example.weatherapp.weather.presentation.components.WeatherCard
 import com.example.weatherapp.weather.presentation.utils.getWindDirectionText
 import com.example.weatherapp.weather.presentation.utils.toUiText
 

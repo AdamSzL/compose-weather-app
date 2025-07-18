@@ -1,6 +1,5 @@
 package com.example.weatherapp.core.data.remote.model
 
-import com.example.weatherapp.core.domain.model.DailyForecast
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -22,18 +21,6 @@ data class DailyWeatherDto(
     val pop: Double,
     val uvi: Double
 )
-
-fun List<DailyWeatherDto>.toDailyForecastList(): List<DailyForecast> {
-    return map { dto ->
-        DailyForecast(
-            dt = dto.dt,
-            minTemp = dto.temp.min,
-            maxTemp = dto.temp.max,
-            weatherDescription = dto.weather.firstOrNull()?.description ?: "Unknown",
-            weatherIcon = dto.weather.firstOrNull()?.icon ?: "01d",
-        )
-    }
-}
 
 @Serializable
 data class DailyTemperatureDto(

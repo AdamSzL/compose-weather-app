@@ -13,8 +13,7 @@ import com.example.weatherapp.weather.presentation.components.tiles.SunriseTile
 import com.example.weatherapp.weather.presentation.components.tiles.SunsetTile
 import com.example.weatherapp.weather.presentation.components.tiles.UviTile
 import com.example.weatherapp.weather.presentation.components.tiles.VisibilityTile
-import com.example.weatherapp.weather.presentation.components.tiles.WindDirectionTile
-import com.example.weatherapp.weather.presentation.components.tiles.WindSpeedTile
+import com.example.weatherapp.weather.presentation.components.tiles.WindTile
 import com.example.weatherapp.weather.presentation.model.WeatherTileData
 
 @Composable
@@ -71,14 +70,9 @@ fun WeatherTile(
                 modifier = modifier
             )
         }
-        is WeatherTileData.WindSpeed -> {
-            WindSpeedTile(
+        is WeatherTileData.Wind -> {
+            WindTile(
                 windSpeed = tileData.windSpeed,
-                modifier = modifier
-            )
-        }
-        is WeatherTileData.WindDirection -> {
-            WindDirectionTile(
                 windDirection = tileData.windDirection,
                 modifier = modifier
             )

@@ -10,6 +10,7 @@ class RefreshUtilsKtTest {
 
     private fun fakeCurrentWeatherEntity(
         locationId: Long = 1L,
+        timezone: String = "Europe/Warsaw",
         dt: Long = System.currentTimeMillis(),
         temp: Double = 20.0,
         feelsLike: Double = 20.0,
@@ -31,6 +32,7 @@ class RefreshUtilsKtTest {
     ): CurrentWeatherEntity {
         return CurrentWeatherEntity(
             locationId = locationId,
+            timezone = timezone,
             dt = dt,
             sunrise = sunrise,
             sunset = sunset,

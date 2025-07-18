@@ -36,27 +36,27 @@ val fakeLocations = listOf(
 
 val fakeWeatherBriefs = listOf(
     BriefWeather(
-        temperature = 15.1,
+        temperature = 15,
         icon = "01d",
         description = "clear sky"
     ),
     BriefWeather(
-        temperature = 18.5,
+        temperature = 18,
         icon = "02d",
         description = "few clouds"
     ),
     BriefWeather(
-        temperature = 22.3,
+        temperature = 22,
         icon = "03d",
         description = "scattered clouds"
     ),
     BriefWeather(
-        temperature = 20.3,
+        temperature = 20,
         icon = "04d",
         description = "broken clouds"
     ),
     BriefWeather(
-        temperature = 28.3,
+        temperature = 28,
         icon = "10d",
         description = "rain"
     )

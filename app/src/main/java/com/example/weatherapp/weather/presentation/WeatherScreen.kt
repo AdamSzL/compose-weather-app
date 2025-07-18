@@ -1,6 +1,7 @@
 package com.example.weatherapp.weather.presentation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -32,13 +33,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.R
-import com.example.weatherapp.core.domain.model.GeoLocation
 import com.example.weatherapp.core.domain.model.formattedAddress
 import com.example.weatherapp.core.fake.fakeLocations
-import com.example.weatherapp.core.fake.fakeUserLocation
+import com.example.weatherapp.core.presentation.components.ScreenWithLoadingContent
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.example.weatherapp.weather.presentation.components.EditModeHorizontalToolbar
 import com.example.weatherapp.weather.presentation.components.WeatherOverview
+import com.example.weatherapp.weather.presentation.fake.fakeDetailedWeather
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherTileData
 import org.koin.androidx.compose.koinViewModel
@@ -55,7 +56,6 @@ fun WeatherRoot(
     val weatherState by weatherViewModel.weatherState.collectAsStateWithLifecycle()
 
     WeatherScreen(
-        location = fakeUserLocation,
         weatherState = weatherState,
         onWeatherScreenEvent = {
             when (it) {
@@ -70,14 +70,10 @@ fun WeatherRoot(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WeatherScreen(
-    location: GeoLocation,
     weatherState: WeatherState,
     onWeatherScreenEvent: (WeatherScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val fullLocationName by remember(location.address) {
-        mutableStateOf(location.address.formattedAddress())
-    }
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
@@ -90,7 +86,10 @@ fun WeatherScreen(
 
     Scaffold(
         topBar = {
-            if (weatherState.weatherHeaderInfo != null) {
+            if (weatherState.weatherInfo != null) {
+                val fullLocationName by remember(weatherState.weatherInfo.location.address) {
+                    mutableStateOf(weatherState.weatherInfo.location.address.formattedAddress())
+                }
                 CenterAlignedTopAppBar(
                     navigationIcon = {
                         IconButton(
@@ -107,7 +106,7 @@ fun WeatherScreen(
                     title = {
                         Text(
                             text = fullLocationName,
-                            style = MaterialTheme.typography.headlineMedium,
+                            style = MaterialTheme.typography.headlineSmall,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
@@ -115,76 +114,100 @@ fun WeatherScreen(
                 )
             }
         },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         modifier = modifier
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
+        ScreenWithLoadingContent(
+            isLoadingContent = weatherState.isLoading,
+            modifier = Modifier.padding(innerPadding)
         ) {
-            WeatherOverview(
-                weatherHeaderInfo = weatherState.weatherHeaderInfo!!,
-                weatherTileData = weatherState.weatherTileData,
-                areTilesReorderable = weatherState.isEditModeEnabled && !weatherState.isDeleteModeEnabled && !weatherState.isSavingLayout && !weatherState.areTilesLocked,
-                areTilesRemovable = weatherState.isDeleteModeEnabled,
-                onDeleteTile = {
-                    onWeatherScreenEvent(WeatherScreenEvent.DeleteTile(it))
-                },
-                onMoveTile = { from, to ->
-                    onWeatherScreenEvent(WeatherScreenEvent.MoveTile(from, to))
-                },
-                modifier = Modifier
-                    .padding(horizontal = dimensionResource(R.dimen.padding_big))
-            )
-            EditModeHorizontalToolbar(
-                weatherState = weatherState,
-                onEnterEditMode = {
-                    onWeatherScreenEvent(WeatherScreenEvent.ToggleEditMode(true))
-                },
-                onExitEditMode = {
-                    onWeatherScreenEvent(WeatherScreenEvent.SaveLayoutAndExitEditMode)
-                },
-                onUndoLayoutChange = {
-                    onWeatherScreenEvent(WeatherScreenEvent.UndoLayoutChange)
-                },
-                onRedoLayoutChange = {
-                    onWeatherScreenEvent(WeatherScreenEvent.RedoLayoutChange)
-                },
-                onToggleTilesLock = {
-                    onWeatherScreenEvent(WeatherScreenEvent.ToggleTilesLock(it))
-                },
-                onToggleDeleteMode = {
-                    onWeatherScreenEvent(WeatherScreenEvent.ToggleDeleteMode(it))
-                },
-                onShuffleTiles = {
-                    onWeatherScreenEvent(WeatherScreenEvent.ShuffleTiles)
-                },
-                modifier = Modifier
-                    .align(BottomEnd)
-                    .offset(x = -ScreenOffset, y = -ScreenOffset),
-            )
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                WeatherOverview(
+                    weatherInfo = weatherState.weatherInfo!!,
+                    areTilesReorderable = weatherState.isEditModeEnabled && !weatherState.isDeleteModeEnabled && !weatherState.isSavingLayout && !weatherState.areTilesLocked,
+                    areTilesRemovable = weatherState.isDeleteModeEnabled,
+                    onDeleteTile = {
+                        onWeatherScreenEvent(WeatherScreenEvent.DeleteTile(it))
+                    },
+                    onMoveTile = { from, to ->
+                        onWeatherScreenEvent(WeatherScreenEvent.MoveTile(from, to))
+                    },
+                    modifier = Modifier
+                        .padding(horizontal = dimensionResource(R.dimen.padding_big))
+                )
+                EditModeHorizontalToolbar(
+                    weatherState = weatherState,
+                    onEnterEditMode = {
+                        onWeatherScreenEvent(WeatherScreenEvent.ToggleEditMode(true))
+                    },
+                    onExitEditMode = {
+                        onWeatherScreenEvent(WeatherScreenEvent.SaveLayoutAndExitEditMode)
+                    },
+                    onResetLayout = {
+                        onWeatherScreenEvent(WeatherScreenEvent.ResetLayout)
+                    },
+                    onUndoLayoutChange = {
+                        onWeatherScreenEvent(WeatherScreenEvent.UndoLayoutChange)
+                    },
+                    onRedoLayoutChange = {
+                        onWeatherScreenEvent(WeatherScreenEvent.RedoLayoutChange)
+                    },
+                    onToggleTilesLock = {
+                        onWeatherScreenEvent(WeatherScreenEvent.ToggleTilesLock(it))
+                    },
+                    onToggleDeleteMode = {
+                        onWeatherScreenEvent(WeatherScreenEvent.ToggleDeleteMode(it))
+                    },
+                    onShuffleTiles = {
+                        onWeatherScreenEvent(WeatherScreenEvent.ShuffleTiles)
+                    },
+                    modifier = Modifier
+                        .align(BottomEnd)
+                        .offset(x = -ScreenOffset, y = -ScreenOffset),
+                )
+            }
         }
     }
 }
 
-class IsEditModeEnabledParameterProvider: PreviewParameterProvider<Boolean> {
-    override val values: Sequence<Boolean>
-        get() = sequenceOf(true, false)
+class WeatherStateParameterProvider: PreviewParameterProvider<WeatherState> {
+    override val values: Sequence<WeatherState>
+        get() = sequenceOf(
+            WeatherState(
+                weatherInfo = WeatherInfo(
+                    location = fakeLocations.first(),
+                    timezone = "Europe/Warsaw",
+                    hourlyForecast = fakeDetailedWeather.hourlyForecast,
+                    dailyForecast = fakeDetailedWeather.dailyForecast,
+                    weatherHeaderInfo = fakeWeatherHeaderInfo,
+                    weatherTileData = fakeWeatherTileData,
+                ),
+                isEditModeEnabled = false
+            ),
+            WeatherState(
+                weatherInfo = WeatherInfo(
+                    location = fakeLocations.first(),
+                    timezone = "Europe/Warsaw",
+                    hourlyForecast = fakeDetailedWeather.hourlyForecast,
+                    dailyForecast = fakeDetailedWeather.dailyForecast,
+                    weatherHeaderInfo = fakeWeatherHeaderInfo,
+                    weatherTileData = fakeWeatherTileData,
+                ),
+                isEditModeEnabled = true
+            )
+        )
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun WeatherScreenPreview(
-    @PreviewParameter(IsEditModeEnabledParameterProvider::class) isEditModeEnabled: Boolean
+    @PreviewParameter(WeatherStateParameterProvider::class) weatherState: WeatherState
 ) {
     WeatherAppTheme {
         WeatherScreen(
-            location = fakeLocations.first(),
-            weatherState = WeatherState(
-                weatherHeaderInfo = fakeWeatherHeaderInfo,
-                weatherTileData = fakeWeatherTileData,
-                isEditModeEnabled = isEditModeEnabled
-            ),
+            weatherState = weatherState,
             onWeatherScreenEvent = {}
         )
     }

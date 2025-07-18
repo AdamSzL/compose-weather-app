@@ -5,6 +5,7 @@ import com.example.weatherapp.core.presentation.UiText
 import com.example.weatherapp.location_list.domain.models.LocationWeatherBrief
 
 data class LocationListState(
+    val isLoadingLocations: Boolean = false,
     val locationsWithWeatherBrief: List<LocationWeatherBrief> = listOf(),
     val isRefreshingWeatherBriefs: Boolean = false,
     val showMessageEvent: UiEvent<UiText>? = null,

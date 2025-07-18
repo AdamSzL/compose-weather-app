@@ -26,7 +26,6 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,24 +33,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import coil3.ColorImage
 import coil3.annotation.ExperimentalCoilApi
-import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePreviewHandler
-import coil3.compose.LocalAsyncImagePreviewHandler
 import com.example.weatherapp.R
 import com.example.weatherapp.core.domain.model.GeoLocation
 import com.example.weatherapp.core.domain.model.formattedAddress
 import com.example.weatherapp.core.fake.fakeLocationWeatherBriefs
 import com.example.weatherapp.core.presentation.components.ConfirmAlertDialog
-import com.example.weatherapp.core.presentation.utils.weatherIconUrl
+import com.example.weatherapp.core.presentation.components.WeatherIcon
 import com.example.weatherapp.location_list.domain.models.LocationWeatherBrief
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.example.weatherapp.weather.presentation.utils.capitalizeWords
@@ -64,9 +57,6 @@ fun WeatherBriefItem(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val previewHandler = AsyncImagePreviewHandler {
-        ColorImage(Color.Red.toArgb())
-    }
     var isDeleteLocationDialogVisible by remember { mutableStateOf(false) }
     val swipeToDismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
@@ -154,13 +144,11 @@ fun WeatherBriefItem(
                         targetState = locationWeatherBrief.weatherBrief != null
                     ) { weatherBriefAvailable ->
                         if (weatherBriefAvailable) {
-                            CompositionLocalProvider(LocalAsyncImagePreviewHandler provides previewHandler) {
-                                AsyncImage(
-                                    model = weatherIconUrl.format(locationWeatherBrief.weatherBrief!!.icon, "2"),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(dimensionResource(R.dimen.size_medium)),
-                                )
-                            }
+                            WeatherIcon(
+                                icon = locationWeatherBrief.weatherBrief!!.icon,
+                                size = "2",
+                                modifier = Modifier.size(dimensionResource(R.dimen.size_medium))
+                            )
                         } else {
                             Icon(
                                 painter = painterResource(R.drawable.ic_dash),
@@ -196,7 +184,7 @@ fun WeatherBriefItem(
                 ) { weatherBriefAvailable ->
                     if (weatherBriefAvailable) {
                         Text(
-                            text = stringResource(R.string.degrees, locationWeatherBrief.weatherBrief!!.temperature.toInt()),
+                            text = stringResource(R.string.degrees, locationWeatherBrief.weatherBrief!!.temperature),
                             style = MaterialTheme.typography.displaySmall,
                         )
                     } else {

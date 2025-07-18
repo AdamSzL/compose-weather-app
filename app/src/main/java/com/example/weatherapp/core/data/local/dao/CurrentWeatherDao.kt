@@ -7,7 +7,7 @@ import androidx.room.Query
 import com.example.weatherapp.core.data.local.entity.CurrentWeatherEntity
 
 @Dao
-interface SavedWeatherDao {
+interface CurrentWeatherDao {
 
     @Query("SELECT * FROM current_weather WHERE locationId = :locationId")
     suspend fun getWeatherByLocationId(locationId: Long): CurrentWeatherEntity?

@@ -4,13 +4,10 @@ import java.util.UUID
 
 sealed class WeatherTileData(val tileId: String = UUID.randomUUID().toString()) {
 
-    data class WindSpeed(
+    data class Wind(
         val windSpeed: Double,
-    ) : WeatherTileData()
-
-    data class WindDirection(
         val windDirection: Int
-    ): WeatherTileData()
+    ) : WeatherTileData()
 
     data class Rain(
         val rain: Double

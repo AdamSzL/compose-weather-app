@@ -16,7 +16,7 @@ sealed interface WeatherScreenEvent {
 
     data object ShuffleTiles: WeatherScreenEvent
 
-    data object SaveLayout: WeatherScreenEvent
+    data object ResetLayout: WeatherScreenEvent
 
     data object UndoLayoutChange: WeatherScreenEvent
 
