@@ -34,9 +34,9 @@ It supports multiple locations, interactive tile layout editing, and real-time w
 - Geocoder API
 - Koin for Dependency Injection
 - Ktor Client for network requests
-- Room (caching, planned)
-- Fused Location Provider ("My Location", planned)
-- Places API ("Search For Location", planned)
+- Room (caching)
+- Fused Location Provider ("My Location")
+- Places API ("Search For Location")
 
 ### Testing
 - Unit tests for ViewModels and utility functions using JUnit
