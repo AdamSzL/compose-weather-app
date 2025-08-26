@@ -74,7 +74,8 @@ fun WeatherOverview(
             GridItemSpan(maxLineSpan)
         }) {
             DailyForecastTile(
-                dailyForecast = weatherInfo.dailyForecast
+                dailyForecast = weatherInfo.dailyForecast,
+                timezone = weatherInfo.timezone,
             )
         }
         items(

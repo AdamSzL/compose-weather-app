@@ -112,4 +112,5 @@
     <string name="hourly_forecast">Hourly forecast</string>
     <string name="daily_forecast">Daily forecast</string>
     <string name="now">Now</string>
+    <string name="today">Today</string>
 </resources>

@@ -1,16 +1,14 @@
 package com.example.weatherapp.weather.presentation.components.tiles.forecast
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
+import coil3.annotation.ExperimentalCoilApi
 import com.example.weatherapp.R
 import com.example.weatherapp.core.domain.model.DailyForecast
 import com.example.weatherapp.ui.theme.WeatherAppTheme
@@ -20,43 +18,40 @@ import com.example.weatherapp.weather.presentation.fake.fakeDetailedWeather
 @Composable
 fun DailyForecastTile(
     dailyForecast: List<DailyForecast>,
+    timezone: String,
     modifier: Modifier = Modifier
 ) {
-    val unit = R.string.ms
     WeatherCard(
         headerIcon = R.drawable.ic_calendar,
         headerText = R.string.daily_forecast,
         modifier = modifier
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
             modifier = Modifier.fillMaxSize()
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Hello",
-                    style = MaterialTheme.typography.displayLarge.copy(fontWeight = FontWeight.SemiBold),
-                    color = MaterialTheme.colorScheme.tertiary
+            itemsIndexed(
+                items = dailyForecast,
+                key = { _, item -> item.dt }
+            ) { index, dailyForecastItem ->
+                DailyForecastTileItem(
+                    dailyForecast = dailyForecastItem,
+                    timezone = timezone,
+                    isToday = index == 0,
                 )
-                unit?.let {
-                    Text(
-                        text = stringResource(unit),
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
             }
         }
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Preview(showBackground = true)
 @Composable
-private fun DailyForecastTilePreview() {
+private fun HourlyForecastTilePreview() {
     WeatherAppTheme {
         DailyForecastTile(
-            dailyForecast = fakeDetailedWeather.dailyForecast
+            dailyForecast = fakeDetailedWeather.dailyForecast,
+            timezone = "Europe/Warsaw"
         )
     }
 }

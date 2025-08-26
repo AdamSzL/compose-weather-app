@@ -1,8 +1,6 @@
 package com.example.weatherapp.location_list.presentation
 
 import android.app.Activity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -21,7 +19,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -142,14 +139,6 @@ fun LocationListScreen(
                     modifier = Modifier.fillMaxSize()
                 )
 
-                if (isFabExpanded) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black.copy(alpha = 0.5f))
-                            .clickable { isFabExpanded = false }
-                    )
-                }
                 AddLocationFloatingActionButtonMenu(
                     isMenuExpanded = isFabExpanded,
                     onExpandedToggle = {
