@@ -12,14 +12,14 @@ It supports multiple locations, interactive tile layout editing, and real-time w
 - Real-time current weather data for each location (temperature, conditions, etc.)
 - Modular weather tile system: wind speed, humidity, rain, sunrise/sunset, etc.
 - Customizable tile layout: move, delete, shuffle, reset, save changes
-- Full dark mode support
-- Fake data fallback for development and UI previews
 - Search for location by name (e.g., city or place)
 - "My location" support (with location permissions)
-
-🚧 **In Progress / Planned:**
 - Daily and hourly weather forecasts per location
-- Offline support via local weather data caching (already done for saved locations and current weather)
+
+📝 **Planned:**
+- Home screen widget showing current weather and forecast
+- WearOS companion app with key weather data
+- Notifications with daily weather summary and severe weather alerts
 
 ## 🔧 Tech Stack
 
@@ -42,33 +42,26 @@ It supports multiple locations, interactive tile layout editing, and real-time w
 - Unit tests for ViewModels and utility functions using JUnit
 - UI tests for Jetpack Compose (Compose Testing APIs)
 
-## 📸 Screenshots
+## 🎥 Demos
 
-### Locations
+### Adding and removing locations
+- You can add a location in several ways: using the current user's location, selecting a place on the map, or searching via the Places API.
+- Locations can be removed by swiping left or right.
 
-<img src="https://github.com/user-attachments/assets/737878df-9cd7-43aa-b198-569e2987a891" alt="App screenshot 1" width="300" />
-<img src="https://github.com/user-attachments/assets/ab3a26aa-8834-43e0-9e6a-1953c2c42c45" alt="App screenshot 1" width="300" />
-<img src="https://github.com/user-attachments/assets/e97ed036-888e-47f6-8a4d-dc3f26bf7d3d" alt="App screenshot 1" width="300" />
-<img src="https://github.com/user-attachments/assets/1cf0c958-af96-4ef2-a297-852ecd80e434" alt="App screenshot 1" width="300" />
+https://github.com/user-attachments/assets/611d8626-8232-4ce7-bbd3-4923168f3dc3
 
-### Choosing a location from map (Maps SDK for Android)
-<img src="https://github.com/user-attachments/assets/df6defa2-7dfe-46d6-9d32-53dcc687ebca" alt="App screenshot 1" width="300" />
-<img src="https://github.com/user-attachments/assets/9b783585-9238-4487-a270-255f68a5d87b" alt="App screenshot 1" width="300" />
-<img src="https://github.com/user-attachments/assets/c1cc9443-ebf5-4645-a0c0-0cb04cce9386" alt="App screenshot 1" width="300" />
+### Viewing detailed weather for the selected location
+- Users can view detailed weather for a location by clicking on it.
+- Detailed weather includes daily and hourly forecasts, as well as current data such as temperature, humidity, and more.
 
-### Viewing detailed weather
-<img src="https://github.com/user-attachments/assets/d9370fd5-ba07-40ec-a940-69cca5042d15" alt="App screenshot 1" width="300" />
-<img src="https://github.com/user-attachments/assets/98c59932-0d3e-4ac5-a6ed-218e7f8b1cec" alt="App screenshot 1" width="300" />
-<img src="https://github.com/user-attachments/assets/93a14415-4bef-4653-aace-39f11e43095a" alt="App screenshot 1" width="300" />
+https://github.com/user-attachments/assets/14f9f189-8d36-4211-af0a-dd647b421c93
 
-### Editing detailed weather layout - shuffling tiles, deleting tiles, moving tiles
-<img src="https://github.com/user-attachments/assets/5b0c3584-96ea-408c-9674-954bafe93ccc" alt="App screenshot 1" width="300" />
-<img src="https://github.com/user-attachments/assets/d390c006-dada-4119-bd28-42d20e48d93f" alt="App screenshot 1" width="300" />
-<img src="https://github.com/user-attachments/assets/ff35c87b-78c1-4342-b36a-1a7fd81ee5a0" alt="App screenshot 1" width="300" />
-<img src="https://github.com/user-attachments/assets/7c9c600e-2a7c-486f-90e0-a7e61e685e9d" alt="App screenshot 1" width="300" />
-<img src="https://github.com/user-attachments/assets/751adfbc-294c-4528-9e83-346bfc3a44ba" alt="App screenshot 1" width="300" />
-<img src="https://github.com/user-attachments/assets/25e2aa5f-0f75-43cf-b60e-fea74bda738c" alt="App screenshot 1" width="300" />
+### Editing the tile layout
+- Users can freely customize the tile layout by moving and reordering tiles.
+- The layout is saved locally and shared across all locations.
+- Available actions include shuffling tiles, undoing/redoing changes, restoring the default layout (with all tiles), locking tiles to prevent accidental moves, and deleting tiles.
 
+https://github.com/user-attachments/assets/170be0e7-2acf-4f5d-ab92-067fe4762ccd
 
 ## 📦 Project Status
 
