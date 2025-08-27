@@ -20,10 +20,6 @@ class LocationMapViewModel(
     private val _locationMapState = MutableStateFlow(LocationMapState())
     val locationMapState = _locationMapState.asStateFlow()
 
-    init {
-
-    }
-
     fun onLocationMapScreenEvent(event: LocationMapScreenEvent) {
         when (event) {
             is LocationMapScreenEvent.SelectLocation -> updateSelectedLocation(event.location)

@@ -1,6 +1,5 @@
 package com.example.weatherapp.weather.di
 
-import com.example.weatherapp.forecast.presentation.ForecastViewModel
 import com.example.weatherapp.weather.data.repository.TileLayoutRepository
 import com.example.weatherapp.weather.data.repository.TileLayoutRepositoryImpl
 import com.example.weatherapp.weather.domain.use_cases.DeleteTileUseCase
@@ -13,7 +12,6 @@ import org.koin.dsl.module
 
 val weatherModule = module {
     viewModelOf(::WeatherViewModel)
-    viewModelOf(::ForecastViewModel)
     singleOf(::DeleteTileUseCase)
     singleOf(::MoveTileUseCase)
     singleOf(::SaveLayoutInHistoryUseCase)

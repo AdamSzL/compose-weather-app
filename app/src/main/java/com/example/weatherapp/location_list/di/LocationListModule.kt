@@ -8,6 +8,7 @@ import com.example.weatherapp.location_list.data.repository.location_address.Loc
 import com.example.weatherapp.location_list.data.repository.saved_locations.SavedLocationsRepository
 import com.example.weatherapp.location_list.data.repository.saved_locations.SavedLocationsRepositoryImpl
 import com.example.weatherapp.location_list.domain.use_cases.FetchLocationWeatherBriefUseCase
+import com.example.weatherapp.location_list.domain.use_cases.RefreshSavedLocationsWeatherBriefUseCase
 import com.example.weatherapp.location_list.presentation.LocationListViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf

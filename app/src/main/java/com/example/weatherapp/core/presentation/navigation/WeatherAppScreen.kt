@@ -9,9 +9,6 @@ sealed interface WeatherAppScreen {
     data class WeatherScreen(val locationId: Long)
 
     @Serializable
-    data object ForecastScreen: WeatherAppScreen
-
-    @Serializable
     data object LocationListScreen: WeatherAppScreen
 
     @Serializable

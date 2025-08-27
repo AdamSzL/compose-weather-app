@@ -143,23 +143,6 @@ fun LocationMapScreen(
                     modifier = Modifier.size(IconButtonDefaults.largeIconSize),
                 )
             }
-//            LocationMapControls(
-//                isCancelEnabled = !locationMapState.isSavingLocation,
-//                isSaveEnabled = locationMapState.selectedLocation != null && !locationMapState.isSavingLocation,
-//                onCancel = navigateBack,
-//                onSave = {
-//                    onLocationMapScreenEvent(LocationMapScreenEvent.SaveSelectedLocation)
-//                },
-//                modifier = Modifier
-//                    .align(Alignment.BottomCenter)
-//                    .padding(bottom = dimensionResource(R.dimen.size_medium))
-//                    .clip(RoundedCornerShape(dimensionResource(R.dimen.size_small)))
-//                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
-//                    .padding(
-//                        horizontal = dimensionResource(R.dimen.padding_medium),
-//                        vertical = dimensionResource(R.dimen.padding_small)
-//                    )
-//            )
         }
     }
 }

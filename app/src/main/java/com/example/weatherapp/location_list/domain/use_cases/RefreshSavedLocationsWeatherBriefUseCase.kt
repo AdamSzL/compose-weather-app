@@ -1,4 +1,4 @@
-package com.example.weatherapp.location_list.di
+package com.example.weatherapp.location_list.domain.use_cases
 
 import com.example.weatherapp.core.data.repository.WeatherRepository
 import com.example.weatherapp.core.domain.Result

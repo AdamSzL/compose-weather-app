@@ -11,7 +11,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.weatherapp.core.presentation.navigation.WeatherAppScreen
-import com.example.weatherapp.forecast.presentation.ForecastRoot
 import com.example.weatherapp.location_list.presentation.LocationListRoot
 import com.example.weatherapp.location_search.presentation.map.LocationMapRoot
 import com.example.weatherapp.location_search.presentation.place_search.LocationSearchRoot
@@ -42,9 +41,6 @@ fun WeatherApplication(
                 locationId = locationId,
                 onNavigateBack = { navController.popBackStack() }
             )
-        }
-        composable<WeatherAppScreen.ForecastScreen> {
-            ForecastRoot()
         }
         composable<WeatherAppScreen.LocationListScreen> {
             LocationListRoot(

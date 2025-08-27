@@ -5,8 +5,8 @@ import com.example.weatherapp.core.fake.fakeUserLocation
 import com.example.weatherapp.core.utils.MainDispatcherRule
 import com.example.weatherapp.location_list.data.repository.saved_locations.FakeSavedLocationsRepository
 import com.example.weatherapp.location_list.data.repository.saved_locations.SavedLocationsRepository
-import com.example.weatherapp.location_list.di.RefreshSavedLocationsWeatherBriefUseCase
 import com.example.weatherapp.location_list.domain.use_cases.FetchLocationWeatherBriefUseCase
+import com.example.weatherapp.location_list.domain.use_cases.RefreshSavedLocationsWeatherBriefUseCase
 import com.example.weatherapp.location_list.presentation.LocationListScreenEvent
 import com.example.weatherapp.location_list.presentation.LocationListViewModel
 import com.example.weatherapp.location_search.data.repository.location_permission.FakeLocationPermissionRepository

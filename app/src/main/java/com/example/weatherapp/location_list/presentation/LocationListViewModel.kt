@@ -7,9 +7,9 @@ import com.example.weatherapp.core.domain.Result
 import com.example.weatherapp.core.domain.asUiEvent
 import com.example.weatherapp.core.presentation.UiText
 import com.example.weatherapp.location_list.data.repository.saved_locations.SavedLocationsRepository
-import com.example.weatherapp.location_list.di.RefreshSavedLocationsWeatherBriefUseCase
 import com.example.weatherapp.location_list.domain.models.asUiText
 import com.example.weatherapp.location_list.domain.use_cases.FetchLocationWeatherBriefUseCase
+import com.example.weatherapp.location_list.domain.use_cases.RefreshSavedLocationsWeatherBriefUseCase
 import com.example.weatherapp.location_search.data.repository.location_permission.LocationPermissionRepository
 import com.example.weatherapp.location_search.data.repository.user_location.UserLocationRepository
 import com.example.weatherapp.location_search.domain.models.asUiText
