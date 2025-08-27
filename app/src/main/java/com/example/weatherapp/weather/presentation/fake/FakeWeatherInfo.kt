@@ -4,6 +4,8 @@ import com.example.weatherapp.core.domain.model.BriefWeather
 import com.example.weatherapp.core.domain.model.DailyForecast
 import com.example.weatherapp.core.domain.model.DetailedWeather
 import com.example.weatherapp.core.domain.model.HourlyForecast
+import com.example.weatherapp.core.fake.fakeLocations
+import com.example.weatherapp.weather.presentation.WeatherInfo
 import com.example.weatherapp.weather.presentation.mapper.toWeatherHeaderInfo
 import com.example.weatherapp.weather.presentation.mapper.toWeatherTiles
 
@@ -45,3 +47,12 @@ val fakeDetailedWeather = DetailedWeather(
 val fakeWeatherHeaderInfo = fakeDetailedWeather.toWeatherHeaderInfo()
 
 val fakeWeatherTileData = fakeDetailedWeather.toWeatherTiles()
+
+val fakeWeatherInfo = WeatherInfo(
+    location = fakeLocations.first(),
+    timezone = "Europe/Warsaw",
+    hourlyForecast = fakeDetailedWeather.hourlyForecast,
+    dailyForecast = fakeDetailedWeather.dailyForecast,
+    weatherHeaderInfo = fakeWeatherHeaderInfo,
+    weatherTileData = fakeWeatherTileData,
+)

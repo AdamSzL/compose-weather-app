@@ -1,8 +1,7 @@
 package com.example.weatherapp.weather.presentation.weather.utils
 
 import com.example.weatherapp.weather.presentation.utils.capitalizeWords
-import org.junit.Assert.*
-
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class StringAnimationUtilsKtTest {

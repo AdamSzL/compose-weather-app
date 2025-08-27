@@ -15,11 +15,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.example.weatherapp.R
 import com.example.weatherapp.core.domain.model.formattedAddress
-import com.example.weatherapp.location_list.presentation.LocationsScreen
+import com.example.weatherapp.core.fake.fakeLocationWeatherBriefs
+import com.example.weatherapp.core.fake.fakeLocations
+import com.example.weatherapp.core.fake.fakeUserLocation
+import com.example.weatherapp.location_list.presentation.LocationListScreen
 import com.example.weatherapp.location_list.presentation.LocationListScreenEvent
 import com.example.weatherapp.location_list.presentation.LocationListState
-import com.example.weatherapp.location_list.presentation.fake.fakeLocations
-import com.example.weatherapp.location_list.presentation.fake.fakeUserLocation
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,16 +46,15 @@ class LocationsScreenUITest {
     @Test
     fun locationsScreen_SavedLocationsDisplayedCorrectly() {
         composeTestRule.setContent {
-            LocationsScreen(
+            LocationListScreen(
                 locationListState = LocationListState(
-                    locations = fakeLocations,
+                    locationsWithWeatherBrief = fakeLocationWeatherBriefs,
                 ),
-                selectedMapLocation = null,
                 onLocationScreenEvent = {}
             )
         }
 
-        fakeLocations.forEachIndexed { index, locationWeatherBrief ->
+        fakeLocationWeatherBriefs.forEachIndexed { index, locationWeatherBrief ->
             composeTestRule
                 .onNodeWithTag(SAVED_LOCATIONS_LIST)
                 .performScrollToIndex(index)
@@ -68,11 +68,10 @@ class LocationsScreenUITest {
     @Test
     fun weatherScreen_ClickFloatingActionButton_ExpandsMenu() {
         composeTestRule.setContent {
-            LocationsScreen(
+            LocationListScreen(
                 locationListState = LocationListState(
-                    locations = fakeLocations,
+                    locationsWithWeatherBrief = fakeLocationWeatherBriefs,
                 ),
-                selectedMapLocation = null,
                 onLocationScreenEvent = { event ->
                     when (event) {
                         else -> Unit
@@ -82,7 +81,7 @@ class LocationsScreenUITest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.new_location), useUnmergedTree = true)
+            .onNodeWithTag(ADD_LOCATION_FAB)
             .performClick()
 
         composeTestRule
@@ -101,11 +100,10 @@ class LocationsScreenUITest {
     @Test
     fun weatherScreen_SwipeLocationToTheLeft_DeletesLocation() {
         composeTestRule.setContent {
-            LocationsScreen(
+            LocationListScreen(
                 locationListState = LocationListState(
-                    locations = fakeLocations,
+                    locationsWithWeatherBrief = fakeLocationWeatherBriefs,
                 ),
-                selectedMapLocation = null,
                 onLocationScreenEvent = { event ->
                     when (event) {
                         else -> Unit
@@ -114,7 +112,7 @@ class LocationsScreenUITest {
             )
         }
 
-        val formattedLocationAddress = fakeLocations[1].location.address.formattedAddress()
+        val formattedLocationAddress = fakeLocations[1].address.formattedAddress()
 
         composeTestRule
             .onNodeWithTag(SAVED_LOCATIONS_LIST)
@@ -139,11 +137,10 @@ class LocationsScreenUITest {
     fun weatherScreen_GetUserLocation_NewLocationIsDisplayed() {
         val locations = mutableStateOf(fakeLocations)
         composeTestRule.setContent {
-            LocationsScreen(
+            LocationListScreen(
                 locationListState = LocationListState(
-                    locations = locations.value,
+                    locationsWithWeatherBrief = fakeLocationWeatherBriefs,
                 ),
-                selectedMapLocation = null,
                 onLocationScreenEvent = { event ->
                     when (event) {
                         is LocationListScreenEvent.FetchUserLocation -> {
@@ -156,25 +153,25 @@ class LocationsScreenUITest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.new_location), useUnmergedTree = true)
+            .onNodeWithTag(ADD_LOCATION_FAB)
             .performClick()
 
         composeTestRule
             .onNodeWithText(context.getString(R.string.my_location))
             .performClick()
 
-
         composeTestRule
             .onNodeWithTag(SAVED_LOCATIONS_LIST)
             .performScrollToIndex(fakeLocations.size - 1)
 
         composeTestRule
-            .onNodeWithText(fakeUserLocation.location.address.formattedAddress())
+            .onNodeWithText(fakeUserLocation.address.formattedAddress())
             .assertIsDisplayed()
 
     }
 
     companion object {
         private const val SAVED_LOCATIONS_LIST = "saved_locations_list"
+        private const val ADD_LOCATION_FAB = "add_location_fab"
     }
 }

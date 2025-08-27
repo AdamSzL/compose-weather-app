@@ -71,6 +71,7 @@
     <string name="toggle_delete_mode">Toggle Delete Mode</string>
     <string name="start_delete_mode">Start Delete Mode</string>
     <string name="exit_delete_mode">Exit Delete Mode</string>
+    <string name="enter_edit_mode">Enter Edit Mode</string>
     <string name="exit_edit_mode">Exit Edit Mode</string>
     <string name="unlock_tiles">Unlock Tiles</string>
     <string name="lock_tiles">Lock Tiles</string>

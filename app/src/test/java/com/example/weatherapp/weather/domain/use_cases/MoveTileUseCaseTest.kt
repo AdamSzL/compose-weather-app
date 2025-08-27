@@ -1,7 +1,7 @@
 package com.example.weatherapp.weather.domain.use_cases
 
 import com.example.weatherapp.weather.presentation.fake.fakeWeatherTileData
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 

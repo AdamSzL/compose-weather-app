@@ -13,7 +13,10 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="LoadingScreenPreview">
+      <SelectionState runConfigName="WeatherScreenUITest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="weatherScreen_DeleteTileInDeleteMode_CorrectlyDeletesTile()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

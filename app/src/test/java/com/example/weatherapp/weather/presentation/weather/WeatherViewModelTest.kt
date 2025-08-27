@@ -1,26 +1,5 @@
 package com.example.weatherapp.weather.presentation.weather
 
-import com.example.weatherapp.core.presentation.UiText
-import com.example.weatherapp.core.utils.MainDispatcherRule
-import com.example.weatherapp.core.data.repository.FakeWeatherRepository
-import com.example.weatherapp.core.data.repository.WeatherRepository
-import com.example.weatherapp.core.domain.error.GetWeatherError
-import com.example.weatherapp.core.domain.error.asUiText
-import com.example.weatherapp.core.fake.fakeUserLocation
-import com.example.weatherapp.location_list.data.repository.saved_locations.SavedLocationsRepository
-import com.example.weatherapp.weather.domain.use_cases.DeleteTileUseCase
-import com.example.weatherapp.weather.domain.use_cases.MoveTileUseCase
-import com.example.weatherapp.weather.domain.use_cases.SaveLayoutInHistoryUseCase
-import com.example.weatherapp.weather.presentation.WeatherScreenEvent
-import com.example.weatherapp.weather.presentation.WeatherViewModel
-import com.example.weatherapp.weather.presentation.fake.fakeWeatherTileData
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-
 //class WeatherViewModelTest {
 //
 //    private lateinit var viewModel: WeatherViewModel

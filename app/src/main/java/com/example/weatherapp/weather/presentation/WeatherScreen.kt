@@ -34,14 +34,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.R
 import com.example.weatherapp.core.domain.model.formattedAddress
-import com.example.weatherapp.core.fake.fakeLocations
 import com.example.weatherapp.core.presentation.components.ScreenWithLoadingContent
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.example.weatherapp.weather.presentation.components.EditModeHorizontalToolbar
 import com.example.weatherapp.weather.presentation.components.WeatherOverview
-import com.example.weatherapp.weather.presentation.fake.fakeDetailedWeather
-import com.example.weatherapp.weather.presentation.fake.fakeWeatherHeaderInfo
-import com.example.weatherapp.weather.presentation.fake.fakeWeatherTileData
+import com.example.weatherapp.weather.presentation.fake.fakeWeatherInfo
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -176,25 +173,11 @@ class WeatherStateParameterProvider: PreviewParameterProvider<WeatherState> {
     override val values: Sequence<WeatherState>
         get() = sequenceOf(
             WeatherState(
-                weatherInfo = WeatherInfo(
-                    location = fakeLocations.first(),
-                    timezone = "Europe/Warsaw",
-                    hourlyForecast = fakeDetailedWeather.hourlyForecast,
-                    dailyForecast = fakeDetailedWeather.dailyForecast,
-                    weatherHeaderInfo = fakeWeatherHeaderInfo,
-                    weatherTileData = fakeWeatherTileData,
-                ),
+                weatherInfo = fakeWeatherInfo,
                 isEditModeEnabled = false
             ),
             WeatherState(
-                weatherInfo = WeatherInfo(
-                    location = fakeLocations.first(),
-                    timezone = "Europe/Warsaw",
-                    hourlyForecast = fakeDetailedWeather.hourlyForecast,
-                    dailyForecast = fakeDetailedWeather.dailyForecast,
-                    weatherHeaderInfo = fakeWeatherHeaderInfo,
-                    weatherTileData = fakeWeatherTileData,
-                ),
+                weatherInfo = fakeWeatherInfo,
                 isEditModeEnabled = true
             )
         )

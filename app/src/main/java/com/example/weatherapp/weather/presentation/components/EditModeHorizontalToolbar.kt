@@ -52,7 +52,11 @@ fun EditModeHorizontalToolbar(
             ) {
                 Icon(
                     imageVector = if (weatherState.isEditModeEnabled) Icons.Filled.Check else Icons.Filled.Edit,
-                    stringResource(R.string.edit_mode)
+                    contentDescription = if (weatherState.isEditModeEnabled) {
+                        stringResource(R.string.exit_edit_mode)
+                    } else {
+                        stringResource(R.string.enter_edit_mode)
+                    }
                 )
             }
         },
@@ -113,7 +117,11 @@ fun EditModeHorizontalToolbar(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_delete),
-                    contentDescription = stringResource(R.string.delete_tiles)
+                    contentDescription = if (weatherState.isDeleteModeEnabled) {
+                        stringResource(R.string.exit_delete_mode)
+                    } else {
+                        stringResource(R.string.start_delete_mode)
+                    }
                 )
             }
             IconButton(

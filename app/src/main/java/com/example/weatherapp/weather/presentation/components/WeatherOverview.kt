@@ -18,14 +18,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weatherapp.R
-import com.example.weatherapp.core.fake.fakeUserLocation
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.example.weatherapp.weather.presentation.WeatherInfo
 import com.example.weatherapp.weather.presentation.components.tiles.forecast.DailyForecastTile
 import com.example.weatherapp.weather.presentation.components.tiles.forecast.HourlyForecastTile
-import com.example.weatherapp.weather.presentation.fake.fakeDetailedWeather
-import com.example.weatherapp.weather.presentation.fake.fakeWeatherHeaderInfo
-import com.example.weatherapp.weather.presentation.fake.fakeWeatherTileData
+import com.example.weatherapp.weather.presentation.fake.fakeWeatherInfo
 import com.example.weatherapp.weather.presentation.utils.shake
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyGridState
@@ -67,7 +64,8 @@ fun WeatherOverview(
         }) {
             HourlyForecastTile(
                 hourlyForecast = weatherInfo.hourlyForecast,
-                timezone = weatherInfo.timezone
+                timezone = weatherInfo.timezone,
+                modifier = Modifier.testTag("HourlyForecast")
             )
         }
         item(span = {
@@ -76,6 +74,7 @@ fun WeatherOverview(
             DailyForecastTile(
                 dailyForecast = weatherInfo.dailyForecast,
                 timezone = weatherInfo.timezone,
+                modifier = Modifier.testTag("DailyForecast")
             )
         }
         items(
@@ -130,14 +129,7 @@ fun WeatherOverview(
 private fun WeatherDetailsPreview() {
     WeatherAppTheme {
         WeatherOverview(
-            weatherInfo = WeatherInfo(
-                location = fakeUserLocation,
-                timezone = "Europe/Warsaw",
-                hourlyForecast = fakeDetailedWeather.hourlyForecast,
-                dailyForecast = fakeDetailedWeather.dailyForecast,
-                weatherHeaderInfo = fakeWeatherHeaderInfo,
-                weatherTileData = fakeWeatherTileData,
-            ),
+            weatherInfo = fakeWeatherInfo,
             areTilesReorderable = true,
             areTilesRemovable = false,
             onDeleteTile = {},

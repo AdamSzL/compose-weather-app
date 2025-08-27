@@ -2,7 +2,7 @@ package com.example.weatherapp.location_list.domain.models
 
 import com.example.weatherapp.core.domain.model.GeoAddress
 import com.example.weatherapp.core.domain.model.formattedAddress
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class GeoAddressTest {
